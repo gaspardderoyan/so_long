@@ -13,14 +13,18 @@ SRC = \
 	ft_strchr.c ft_strdup.c ft_striteri.c ft_strjoin.c ft_strlcat.c \
 	ft_strlcpy.c ft_strlen.c ft_strmapi.c ft_strncmp.c ft_strnstr.c \
 	ft_strrchr.c ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c \
-	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
-	ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c \
-	ft_lstmap.c helpers.c types.c types_nbr.c ft_printf.c \
+	helpers.c types.c types_nbr.c ft_printf.c \
 	ft_isspace.c ft_count_strs.c \
 	ft_dlst.c ft_dlst_2.c ft_strtoll.c ft_free_strs.c ft_split_cs.c \
 	strdup_safe.c
 
-OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
+LISTS_DIR = $(addprefix $(SRC_DIR),/lists)
+LISTS_SRC =$(addprefix $(LISTS_DIR), ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c)
+
+SRCS = $(SRC) \
+	   $(LISTS_SRC)
+
+OBJ = $(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
 
 
 all: $(NAME)
