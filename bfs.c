@@ -5,28 +5,34 @@ typedef struct s_position {
 	int	y;
 } t_position;
 
-int	bfs(int **map, t_position *start)
+bool	bfs(int **map, t_position *start)
 {
 	t_list		*queue;
 	t_list		*seen;
-	t_position	*current;
-	t_position			surrounding_cells[5];
-	int			i;
+	t_position	*current_position;
+	t_position	*adj_cells[5];
 
-	lst_add_back(queue, start);
-	lst_add_back(seen, start);
+	ft_lstadd_back(&queue, ft_lstnew(start));
+	ft_lstadd_back(&seen, ft_lstnew(start));
 
-	while (lst_size(queue) != 0)
+	while (ft_lstsize(queue) != 0)
 	{
-		current = lst_pop(queue, 0);
-		if (!current)
+		current_position = lst_pop(queue, 0);
+		if (!current_position)
 			break ;
 
-		surrounding_cells = get_surrounding_cells(current);
+		adj_cells = get_surrounding_cells(current_position);
 		i = 0;
-		while (surrounding_cells[i])
+		while (surrounding_cells[i] != NULL)
 		{
-			if map[][]
+			int current_value = map[adj_cells[i].x][adj_cells[i].y];
+			if (current_value == EXIT)
+				return (true);
+			else if (!lst_contains(adj_cells[i]) && current_value != WALL)
+				ft_lstadd_back(&queue, ft_lstnew(adj_cells[i]));
+				ft_lstadd_back(&seen, ft_lstnew(adj_cells[i]));
+			i++;
 		}
 	}
+	return (false);
 }
