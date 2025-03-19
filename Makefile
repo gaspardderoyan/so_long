@@ -39,7 +39,7 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 
 # Build libft
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) -C $(LIBFT_DIR) debug
 
 # Clean object files and libft's objs
 clean:
