@@ -86,8 +86,5 @@ re: fclean all
 debug: CFLAGS += $(DEBUGFLAGS)
 debug: all
 
-release: DEBUGFLAGS =
-release: all
-
 .PHONY: all clean fclean re
 
