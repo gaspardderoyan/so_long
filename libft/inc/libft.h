@@ -60,6 +60,7 @@ char		*strdup_safe(const char *s);
 char		**ft_split_cs(char const *s, char *cs);
 size_t		ft_count_strs(char **strs);
 void		ft_free_strs(char **strs);
+char		*ft_strcpy(char *dst, char *src);
 
 /* MATH */
 int			ft_atoi(const char *nptr);
@@ -129,6 +130,12 @@ void		p_ptr(va_list *ptr, int *ccount);
 void		p_int(va_list *ptr, int *ccount);
 
 /* INBOX */
+# ifndef BUFFER_SIZE 
+#  define BUFFER_SIZE 42
+# endif
+
+char		*get_next_line(int fd);
+
 /* Add any new functions that haven't been categorized yet */
 
 #endif
