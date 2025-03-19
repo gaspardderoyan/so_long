@@ -9,7 +9,8 @@ OBJ_DIR = obj
 INBOX_SRC_FILES =  
 
 LISTS_SRC_FILES = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
-				  ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
+				  ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c \
+				  ft_lstmap.c
 
 DLISTS_SRC_FILES = ft_dlst.c ft_dlst_2.c
 
@@ -50,8 +51,8 @@ STRING_SRC = $(addprefix $(STRING_DIR), $(STRING_SRC_FILES))
 MEMORY_SRC = $(addprefix $(MEMORY_DIR), $(MEMORY_SRC_FILES))
 CTYPE_SRC = $(addprefix $(CTYPE_DIR), $(CTYPE_SRC_FILES))
 PRINTF_SRC = $(addprefix $(PRINTF_DIR), $(PRINTF_SRC_FILES))
-MATH_SRC = $(addprefix $(MATH_DIR), $(MATH_SRC_FILE))
-IO_SRC = $(addprefix $(IO_DIR), $(IO_SRC_FILE))
+MATH_SRC = $(addprefix $(MATH_DIR), $(MATH_SRC_FILES))
+IO_SRC = $(addprefix $(IO_DIR), $(IO_SRC_FILES))
 
 # Combine all source files
 SRCS = $(INBOX_SRC) $(LISTS_SRC) $(DLISTS_SRC) $(STRING_SRC) $(MEMORY_SRC) \
@@ -71,7 +72,7 @@ $(NAME): $(OBJ)
 # $(dir x) is a function that extracts the directory part of the file path x.
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(DEBUGFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -80,6 +81,13 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+# Debug and release targets
+debug: CFLAGS += $(DEBUGFLAGS)
+debug: all
+
+release: DEBUGFLAGS =
+release: all
 
 .PHONY: all clean fclean re
 
