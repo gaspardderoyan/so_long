@@ -10,6 +10,11 @@ enum Cell {
 	START
 };
 
+typedef struct s_position {
+	int	x;
+	int	y;
+} t_position;
+
 void	ft_lstfree(t_list *lst)
 {
 	t_list *temp;
@@ -91,13 +96,156 @@ bool	check_map(t_list *char_map, size_t lines)
 	return (true);
 }
 
+u_int8_t *convert_line(char *line, size_t len, size_t i, t_position *start)
+{
+	u_int8_t	*row;	
+	size_t		j;
+
+	row = ft_calloc(len, sizeof(u_int8_t));
+	if (!row)
+		return (ft_printf("Malloc for single row failed!\n"), NULL);
+	j = 0;
+	while (line && line[j])
+	{
+		if (line[j] == '\n')
+			row[j] = 0;
+		else if (line[j] == '0')
+			row[j] = EMPTY;
+		else if (line[j] == '1')
+			row[j] = WALL;
+		else if (line[j] == 'C')
+			row[j] = COIN;
+		else if (line[j] == 'E')
+			row[j] = EXIT;
+		else if (line[j] == 'P')
+		{
+			row[j] = START;
+			*start = (t_position){.x = i, .y = j};
+		}
+		j++;
+	}
+	return (row);
+}
+
+u_int8_t **convert_map(t_list *char_map, size_t lines, t_position *start)
+{
+	u_int8_t	**map;
+	size_t		i;
+	size_t		len;
+
+
+	map = ft_calloc(lines + 1, sizeof(u_int8_t*));
+	if (!map)
+		return (ft_printf("Malloc for whole map failed!"), NULL);
+	len = strlen_safe(char_map->content);
+	i = 0;
+	while (i < lines && char_map)
+	{
+		map[i] = convert_line(char_map->content, len, i, start);
+		char_map = char_map->next;
+		i++;
+	}
+	map[i] = NULL;
+	return (map);
+}
+
+void	print_map(u_int8_t **map)
+{
+	int	i;
+	int	j;
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			ft_printf("%d", map[i][j]);
+			j++;
+		}
+		ft_printf("\n");
+		free(map[i]);
+		i++;
+	}
+	free(map);
+}
+
+
+
+bool	is_pos_in_queue(t_list *lst, t_position *pos)
+{
+	while (lst)
+	{
+		if (((t_position*)(lst->content))->x == pos->x 
+			&& ((t_position*)(lst->content))->y == pos->y)
+			return (true);
+		lst = lst->next;
+	}
+	return (false);
+}
+
+void	get_surrounding_cells(t_position pos, t_position *surrounding_cells)
+{
+	surrounding_cells[0] = (t_position){ .x = pos.x + 1, .y = pos.y };
+	surrounding_cells[1] = (t_position){ .x = pos.x, .y = pos.y + 1};
+	surrounding_cells[2] = (t_position){ .x = pos.x - 1, .y = pos.y};
+	surrounding_cells[3] = (t_position){ .x = pos.x, .y = pos.y - 1};
+}
+
+void	*ft_lstpop(t_list **head)
+{
+	t_list	*popped_node;
+
+	popped_node = *head;
+	popped_node->next = NULL;
+	*head = (*head)->next;
+	return (popped_node);
+}
+
+bool	bfs(u_int8_t **map, t_position *start)
+{
+	t_list		*queue;
+	t_list		*seen;
+	t_position	*current_position;
+	t_position	adj_cells[4];
+	size_t		i;
+
+	ft_lstadd_back(&queue, ft_lstnew(start));
+	ft_lstadd_back(&seen, ft_lstnew(start));
+
+	while (ft_lstsize(queue) != 0)
+	{
+		current_position = ft_lstpop(&queue);
+		if (!current_position)
+			break ;
+
+		get_surrounding_cells(*current_position, (t_position*)&adj_cells);
+		i = 0;
+		while (i < 4)
+		{
+			int current_value = map[adj_cells[i].x][adj_cells[i].y];
+			if (current_value == EXIT)
+				return (true);
+			else if (!is_pos_in_queue(seen, &adj_cells[i]) && current_value != WALL)
+			{
+				ft_lstadd_back(&queue, ft_lstnew(&adj_cells[i]));
+				ft_lstadd_back(&seen, ft_lstnew(&adj_cells[i]));
+			}
+			i++;
+		}
+	}
+	return (false);
+}
+
+
 #include <fcntl.h>
 int main(int ac, char **av)
 {
-	int		fd;
-	size_t	lines;
-	char	*res;
-	t_list	*char_map;
+	int			fd;
+	size_t		lines;
+	char		*res;
+	t_list		*char_map;
+	u_int8_t	**map;
+	t_position	start;
 
 	if (ac != 2)
 		return(ft_printf("Wrong number of args! Please provide 1 .ber map\n"), 0);
@@ -118,9 +266,18 @@ int main(int ac, char **av)
 		ft_lstadd_back(&char_map, ft_lstnew(res));
 		lines++;
 	}
+	map = NULL;
 	if (!check_map(char_map, lines))
 		ft_printf("Map not OK\n");
 	else
+	{
 		ft_printf("Map is valid :)\n");
+		map = convert_map(char_map, lines, &start);
+		if (bfs(map, &start))
+			printf("BFS OK!\n");
+		else
+			printf("BFS KO :(\n");
+		print_map(map);
+	}
 	return (ft_lstfree(char_map), close(fd), 0);
 }
