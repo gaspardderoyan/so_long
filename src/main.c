@@ -120,7 +120,8 @@ u_int8_t *convert_line(char *line, size_t len, size_t i, t_position *start)
 		else if (line[j] == 'P')
 		{
 			row[j] = START;
-			*start = (t_position){.x = i, .y = j};
+			start->x = i;
+			start->y = j;
 		}
 		j++;
 	}
@@ -194,17 +195,21 @@ void	get_surrounding_cells(t_position pos, t_position *surrounding_cells)
 void	*ft_lstpop(t_list **head)
 {
 	t_list	*popped_node;
+	void	*content;
 
+	if (!*head)
+		return (NULL);
 	popped_node = *head;
-	popped_node->next = NULL;
 	*head = (*head)->next;
-	return (popped_node);
+	content = popped_node->content;
+	free(popped_node);
+	return (content);
 }
 
 bool	bfs(u_int8_t **map, t_position *start)
 {
-	t_list		*queue;
-	t_list		*seen;
+	t_list		*queue = NULL;
+	t_list		*seen = NULL;
 	t_position	*current_position;
 	t_position	adj_cells[4];
 	size_t		i;
@@ -214,7 +219,7 @@ bool	bfs(u_int8_t **map, t_position *start)
 
 	while (ft_lstsize(queue) != 0)
 	{
-		current_position = ft_lstpop(&queue);
+		current_position = (t_position*)ft_lstpop(&queue);
 		if (!current_position)
 			break ;
 
@@ -224,11 +229,13 @@ bool	bfs(u_int8_t **map, t_position *start)
 		{
 			int current_value = map[adj_cells[i].x][adj_cells[i].y];
 			if (current_value == EXIT)
-				return (true);
+				return (free(current_position), true);
 			else if (!is_pos_in_queue(seen, &adj_cells[i]) && current_value != WALL)
 			{
-				ft_lstadd_back(&queue, ft_lstnew(&adj_cells[i]));
-				ft_lstadd_back(&seen, ft_lstnew(&adj_cells[i]));
+				t_position *new = malloc(sizeof(t_position));
+				*new = adj_cells[i];
+				ft_lstadd_back(&queue, ft_lstnew(new));
+				ft_lstadd_back(&seen, ft_lstnew(new));
 			}
 			i++;
 		}
@@ -245,7 +252,7 @@ int main(int ac, char **av)
 	char		*res;
 	t_list		*char_map;
 	u_int8_t	**map;
-	t_position	start;
+	t_position	*start;
 
 	if (ac != 2)
 		return(ft_printf("Wrong number of args! Please provide 1 .ber map\n"), 0);
@@ -267,13 +274,14 @@ int main(int ac, char **av)
 		lines++;
 	}
 	map = NULL;
+	start = malloc(sizeof(t_position));
 	if (!check_map(char_map, lines))
 		ft_printf("Map not OK\n");
 	else
 	{
 		ft_printf("Map is valid :)\n");
-		map = convert_map(char_map, lines, &start);
-		if (bfs(map, &start))
+		map = convert_map(char_map, lines, start);
+		if (bfs(map, start))
 			printf("BFS OK!\n");
 		else
 			printf("BFS KO :(\n");
