@@ -3,7 +3,7 @@
 #include <sys/types.h>
 
 enum Cell {
-	EMPTY,
+	EMPTY = 1,
 	WALL,
 	COIN,
 	EXIT,
@@ -72,12 +72,13 @@ bool	check_map(t_list *char_map, size_t lines)
 	first_len = strlen_safe(char_map->content);
 	if (ft_strspn(char_map->content, "1") != first_len - 1
 		|| ft_strspn(ft_lstlast(char_map)->content, "1") != first_len - 1)
-			   return (ft_printf("First or last line not walls!\n", false));
+			   return (ft_printf("First or last line not walls!\n"), false);
 	i = 0;
+	found = 0;
 	while (char_map)
 	{
 		if (strlen_safe(char_map->content) != first_len)
-			return (ft_printf("Not a rectangel!"), false);
+			return (ft_printf("Not a rectangle!\n"), false);
 		if (i != 0 && i != lines - 1 && (((char *)(char_map->content))[0] != '1'
 			|| ((char *)(char_map->content))[first_len - 2] != '1'))
 			   return (ft_printf("First or last char not wall!\n"), false);
@@ -86,7 +87,7 @@ bool	check_map(t_list *char_map, size_t lines)
 		i++;
 	}
 	if (found != 3)
-		return (ft_printf("Invalid count of exit or start cells: %d\n", found), false);
+		return (ft_printf("Invalid count of exit/start cells\n", found), false);
 	return (true);
 }
 
