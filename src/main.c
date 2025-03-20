@@ -1,5 +1,6 @@
 #include "../libft/inc/libft.h"
 #include <stddef.h>
+#include <sys/types.h>
 
 enum Cell {
 	EMPTY,
@@ -23,22 +24,69 @@ void	ft_lstfree(t_list *lst)
 	}
 }
 
-bool	check_map(t_list *char_map, int lines)
+/**
+ * @brief calculate the len of the initial segment of 's' which contains only
+ * chars from 'accept'
+ */
+size_t	ft_strspn(const char *s, const char *accept)
+{
+	size_t	len;
+
+	len = 0;
+	while (s && *s)
+	{
+		if (ft_strchr(accept, *s))
+			len++;
+		s++;
+	}
+	return (len);
+}
+
+void	check_line(char *line, u_int8_t *found)
+{
+	while (line && *line)
+	{
+		if ((*found & 1 && *line == 'E') || (*found & 2 && *line == 'P'))
+			*found |= 4;
+		else if (*line == 'E')
+			*found |= 1;
+		else if (*line == 'P')
+			*found |= 2;
+		line++;
+	}
+}
+
+/**
+ * @brief check if the map is valid
+ *
+ * @return true if it is, false if not valid
+ *
+ * compare strspn with len - 1 to account for the \n at the end
+ */
+bool	check_map(t_list *char_map, size_t lines)
 {
 	size_t		first_len;
+	size_t		i;
 	u_int8_t	found;
 	
 	first_len = strlen_safe(char_map->content);
-	// TODO: if first or last lines not all WALL, false
+	if (ft_strspn(char_map->content, "1") != first_len - 1
+		|| ft_strspn(ft_lstlast(char_map)->content, "1") != first_len - 1)
+			   return (ft_printf("First or last line not walls!\n", false));
+	i = 0;
 	while (char_map)
 	{
 		if (strlen_safe(char_map->content) != first_len)
 			return (ft_printf("Not a rectangel!"), false);
-		// TODO: if first and last char of each line != WALL, false
-		// TODO: if START, found OR 1 ; if END, found OR 3 
+		if (i != 0 && i != lines - 1 && (((char *)(char_map->content))[0] != '1'
+			|| ((char *)(char_map->content))[first_len - 2] != '1'))
+			   return (ft_printf("First or last char not wall!\n"), false);
+		check_line(char_map->content, &found);
 		char_map = char_map->next;
+		i++;
 	}
-	// TODO: if found != 3, false
+	if (found != 3)
+		return (ft_printf("Invalid count of exit or start cells: %d\n", found), false);
 	return (true);
 }
 
@@ -46,7 +94,7 @@ bool	check_map(t_list *char_map, int lines)
 int main(int ac, char **av)
 {
 	int		fd;
-	int		lines;
+	size_t	lines;
 	char	*res;
 	t_list	*char_map;
 
@@ -69,7 +117,9 @@ int main(int ac, char **av)
 		ft_lstadd_back(&char_map, ft_lstnew(res));
 		lines++;
 	}
-	if (!check_map(char_map))
-		break ;
+	if (!check_map(char_map, lines))
+		ft_printf("Map not OK\n");
+	else
+		ft_printf("Map is valid :)\n");
 	return (ft_lstfree(char_map), close(fd), 0);
 }
