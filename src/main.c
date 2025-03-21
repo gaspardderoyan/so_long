@@ -245,6 +245,13 @@ bool	bfs(u_int8_t **map, t_position *start)
 	return (false);
 }
 
+typedef struct s_master {
+	size_t		lines;
+	size_t	    len;
+	u_int8_t	**map;
+	t_position	*start;
+} t_master;
+
 
 #include <fcntl.h>
 int main(int ac, char **av)
