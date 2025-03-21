@@ -286,19 +286,18 @@ int main(int ac, char **av)
 		ft_lstadd_back(&char_map, ft_lstnew(res));
 		lines++;
 	}
+
+	// TODO: Function to check the map
 	map = NULL;
 	start = malloc(sizeof(t_position));
 	if (!check_map(char_map, lines))
-		ft_printf("Map not OK\n");
+		return (ft_printf("Map not OK\n"), ft_lstfree(char_map), close(fd), 0);
+	ft_printf("Map is valid :)\n");
+	map = convert_map(char_map, lines, start);
+	if (bfs(map, start))
+		printf("BFS OK!\n");
 	else
-	{
-		ft_printf("Map is valid :)\n");
-		map = convert_map(char_map, lines, start);
-		if (bfs(map, start))
-			printf("BFS OK!\n");
-		else
-			printf("BFS KO :(\n");
-		print_map(map);
-	}
+		printf("BFS KO :(\n");
+	print_map(map, false);
 	return (ft_lstfree(char_map), close(fd), 0);
 }
