@@ -270,6 +270,10 @@ int main(int ac, char **av)
 	fd = open(av[1], O_RDONLY);
 	if (fd <= -1)
 		return (ft_printf("Error opening file!\n"), 1);
+
+	// TODO: Here, just pass 'fd' as well as a master struct, to be read, checked, converted, etc.
+
+	// TODO: Function to read the map
 	lines = 0;
 	res = NULL;
 	char_map = NULL;
