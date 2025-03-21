@@ -8,6 +8,9 @@ OBJ_DIR = obj
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
+MLX_DIR = mlx
+MLX = $(MLX_DIR)/libmlx.a
+
 NAME = so_long
 
 SRCS = main.c
@@ -28,7 +31,6 @@ $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(DEBUGFLAGS) -o $(NAME) -L$(LIBFT_DIR) -lft 
 
 # Compile the object files for main sources
-# TODO use if statement > -p
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR) # @ so not printed
 	$(CC) $(CFLAGS) $(DEBUGFLAGS) -c $< -o $@
@@ -41,16 +43,19 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR) debug
 
+# Build mlx
+$(MLX):
+	$(MAKE) -C $(MLX_DIR)
+
 # Clean object files and libft's objs
 clean:
 	$(MAKE) -C $(LIBFT_DIR) clean
+	$(MAKE) -C $(MLX_DIR) clean
 	rm -rf $(OBJ_DIR)
 
-# TODO clean test executables
-# + executables
 fclean: clean
 	$(MAKE) -C $(LIBFT_DIR) fclean
-	rm -f $(NAME) $(TEST_EXES)
+	rm -f $(NAME)
 
 # Rebuild the project
 re: fclean all
