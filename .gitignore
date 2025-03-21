@@ -1,6 +1,7 @@
 **/*.cache
 **/*.json
 so_long
+mlx/
 
 
 # Prerequisites
