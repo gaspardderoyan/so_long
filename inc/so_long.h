@@ -1,3 +1,4 @@
+#include "../libft/inc/libft.h"
 #include <fcntl.h>
 #include <stddef.h>
 #include <sys/types.h>
@@ -20,4 +21,9 @@ typedef struct s_master {
 	size_t	    len;
 	u_int8_t	**map;
 	t_position	*start;
+	t_list		*char_map;
 } t_master;
+
+// MAP INPUT & FIRST CHECK //
+// parse_map.c //
+bool	process_map(int	fd, t_master *master);
