@@ -1,19 +1,6 @@
 #include "../libft/inc/libft.h"
-#include <stddef.h>
-#include <sys/types.h>
+#include "../inc/so_long.h"
 
-enum Cell {
-	EMPTY = 1,
-	WALL,
-	COIN,
-	EXIT,
-	START
-};
-
-typedef struct s_position {
-	int	x;
-	int	y;
-} t_position;
 
 void	ft_lstfree(t_list *lst)
 {
@@ -245,15 +232,7 @@ bool	bfs(u_int8_t **map, t_position *start)
 	return (false);
 }
 
-typedef struct s_master {
-	size_t		lines;
-	size_t	    len;
-	u_int8_t	**map;
-	t_position	*start;
-} t_master;
 
-
-#include <fcntl.h>
 int main(int ac, char **av)
 {
 	int			fd;
