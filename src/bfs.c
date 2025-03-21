@@ -21,21 +21,6 @@ static void	get_surrounding_cells(t_position pos, t_position *surrounding_cells)
 	surrounding_cells[3] = (t_position){ .x = pos.x, .y = pos.y - 1};
 }
 
-// TODO: move to libft
-void	*ft_lstpop(t_list **head)
-{
-	t_list	*popped_node;
-	void	*content;
-
-	if (!*head)
-		return (NULL);
-	popped_node = *head;
-	*head = (*head)->next;
-	content = popped_node->content;
-	free(popped_node);
-	return (content);
-}
-
 bool	bfs(u_int8_t **map, t_position *start)
 {
 	t_list		*queue = NULL;

@@ -10,7 +10,7 @@ INBOX_SRC_FILES = get_next_line.c
 
 LISTS_SRC_FILES = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
 				  ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c \
-				  ft_lstmap.c ft_lstfree.c
+				  ft_lstmap.c ft_lstfree.c ft_lstpop.c
 
 DLISTS_SRC_FILES = ft_dlst.c ft_dlst_2.c
 
