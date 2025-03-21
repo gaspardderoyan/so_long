@@ -13,7 +13,7 @@ MLX = $(MLX_DIR)/libmlx.a
 
 NAME = so_long
 
-SRCS = main.c parse_map.c
+SRCS = main.c parse_map.c convert_map.c bfs.c
 
 # $(text:pattern=replacement)
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
