@@ -1,7 +1,7 @@
 #include "../libft/inc/libft.h"
 #include "../inc/so_long.h"
 
-static t_master	*init_master()
+t_master	*init_master()
 {
 	t_master	*master;
 	master = ft_calloc(1, sizeof(t_master));
@@ -71,7 +71,6 @@ bool	process_map(int	fd, t_master *master)
 {
 	char	*res;
 
-	master = init_master();
 	res = NULL;
 	if (!master)
 		return (ft_printf("Master struct initialisation failed!\n"), false);

@@ -164,7 +164,7 @@ int main(int ac, char **av)
 	if (fd <= -1)
 		return (ft_printf("Error opening file!\n"), 1);
 
-	master = NULL;
+	master = init_master();
 	process_map(fd, master);
 
 	master->map = convert_map(master->char_map, master->lines, master->start);

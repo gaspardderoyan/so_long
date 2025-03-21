@@ -26,4 +26,5 @@ typedef struct s_master {
 
 // MAP INPUT & FIRST CHECK //
 // parse_map.c //
-bool	process_map(int	fd, t_master *master);
+t_master	*init_master();
+bool		process_map(int	fd, t_master *master);
