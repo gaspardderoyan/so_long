@@ -1,6 +1,14 @@
 #include "../libft/inc/libft.h"
 #include "../inc/so_long.h"
+#include "../inc/error.h"
 
+/**
+ * @brief Checks if a position is already in the queue
+ *
+ * @param lst The list to check
+ * @param pos The position to look for
+ * @return true if position is in queue, false otherwise
+ */
 static bool	is_pos_in_queue(t_list *lst, t_position *pos)
 {
 	while (lst)
@@ -13,6 +21,12 @@ static bool	is_pos_in_queue(t_list *lst, t_position *pos)
 	return (false);
 }
 
+/**
+ * @brief Gets the surrounding cells of a position
+ *
+ * @param pos The central position
+ * @param surrounding_cells Array to store the surrounding positions
+ */
 static void	get_surrounding_cells(t_position pos, t_position *surrounding_cells)
 {
 	surrounding_cells[0] = (t_position){ .x = pos.x + 1, .y = pos.y };
@@ -21,7 +35,14 @@ static void	get_surrounding_cells(t_position pos, t_position *surrounding_cells)
 	surrounding_cells[3] = (t_position){ .x = pos.x, .y = pos.y - 1};
 }
 
-bool	bfs(u_int8_t **map, t_position *start)
+/**
+ * @brief Performs a breadth-first search on the map
+ *
+ * @param map 2D array representing the map
+ * @param start Starting position
+ * @return t_error ERR_SUCCESS if exit is reachable, ERR_MAP_INVALID otherwise
+ */
+t_error	bfs(u_int8_t **map, t_position *start)
 {
 	t_list		*queue = NULL;
 	t_list		*seen = NULL;
@@ -44,7 +65,7 @@ bool	bfs(u_int8_t **map, t_position *start)
 		{
 			int current_value = map[adj_cells[i].x][adj_cells[i].y];
 			if (current_value == EXIT)
-				return (free(current_position), true);
+				return (ERR_SUCCESS);
 			else if (!is_pos_in_queue(seen, &adj_cells[i]) && current_value != WALL)
 			{
 				t_position *new = malloc(sizeof(t_position));
@@ -55,5 +76,5 @@ bool	bfs(u_int8_t **map, t_position *start)
 			i++;
 		}
 	}
-	return (false);
+	return (ERR_MAP_INVALID);
 }

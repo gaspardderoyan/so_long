@@ -1,6 +1,16 @@
 #include "../libft/inc/libft.h"
 #include "../inc/so_long.h"
+#include "../inc/error.h"
 
+/**
+ * @brief Converts a character line to a numeric row
+ *
+ * @param line The character line to convert
+ * @param len The length of the line
+ * @param i The row index
+ * @param start Pointer to store the start position
+ * @return u_int8_t* The converted numeric row
+ */
 static u_int8_t *convert_line(char *line, size_t len, size_t i, t_position *start)
 {
 	u_int8_t	*row;	
@@ -8,7 +18,10 @@ static u_int8_t *convert_line(char *line, size_t len, size_t i, t_position *star
 
 	row = ft_calloc(len, sizeof(u_int8_t));
 	if (!row)
-		return (ft_printf("Malloc for single row failed!\n"), NULL);
+	{
+		handle_error(ERR_MALLOC_FAIL, "Malloc for single row failed!");
+		return (NULL);
+	}
 	j = 0;
 	while (line && line[j])
 	{
@@ -33,6 +46,14 @@ static u_int8_t *convert_line(char *line, size_t len, size_t i, t_position *star
 	return (row);
 }
 
+/**
+ * @brief Converts the character map to a numeric map
+ *
+ * @param char_map List containing the character map
+ * @param lines Number of lines in the map
+ * @param start Pointer to store the start position
+ * @return u_int8_t** The converted numeric map
+ */
 u_int8_t **convert_map(t_list *char_map, size_t lines, t_position *start)
 {
 	u_int8_t	**map;
@@ -42,12 +63,20 @@ u_int8_t **convert_map(t_list *char_map, size_t lines, t_position *start)
 
 	map = ft_calloc(lines + 1, sizeof(u_int8_t*));
 	if (!map)
-		return (ft_printf("Malloc for whole map failed!"), NULL);
+	{
+		handle_error(ERR_MALLOC_FAIL, "Malloc for whole map failed!");
+		return (NULL);
+	}
 	len = strlen_safe(char_map->content);
 	i = 0;
 	while (i < lines && char_map)
 	{
 		map[i] = convert_line(char_map->content, len, i, start);
+		if (!map[i])
+		{
+			free_map(map, i);
+			return (NULL);
+		}
 		char_map = char_map->next;
 		i++;
 	}
