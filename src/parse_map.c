@@ -1,40 +1,6 @@
 #include "../libft/inc/libft.h"
 #include "../inc/so_long.h"
 
-// TODO: move to libft
-void	ft_lstfree(t_list *lst)
-{
-	t_list *temp;
-
-	temp = NULL;
-	while(lst)
-	{
-		temp = lst;	
-		lst = lst->next;
-		free(temp->content);
-		free(temp);
-	}
-}
-
-// TODO: move to libft
-/**
- * @brief calculate the len of the initial segment of 's' which contains only
- * chars from 'accept'
- */
-size_t	ft_strspn(const char *s, const char *accept)
-{
-	size_t	len;
-
-	len = 0;
-	while (s && *s)
-	{
-		if (ft_strchr(accept, *s))
-			len++;
-		s++;
-	}
-	return (len);
-}
-
 static t_master	*init_master()
 {
 	t_master	*master;

@@ -1,10 +1,6 @@
 #include "../libft/inc/libft.h"
 #include "../inc/so_long.h"
 
-
-
-
-
 u_int8_t *convert_line(char *line, size_t len, size_t i, t_position *start)
 {
 	u_int8_t	*row;	
@@ -168,6 +164,7 @@ int main(int ac, char **av)
 	if (fd <= -1)
 		return (ft_printf("Error opening file!\n"), 1);
 
+	master = NULL;
 	process_map(fd, master);
 
 	master->map = convert_map(master->char_map, master->lines, master->start);

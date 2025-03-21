@@ -10,7 +10,7 @@ INBOX_SRC_FILES = get_next_line.c
 
 LISTS_SRC_FILES = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
 				  ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c \
-				  ft_lstmap.c
+				  ft_lstmap.c ft_lstfree.c
 
 DLISTS_SRC_FILES = ft_dlst.c ft_dlst_2.c
 
@@ -18,7 +18,7 @@ STRING_SRC_FILES = ft_split.c ft_strchr.c ft_strdup.c ft_striteri.c \
 	ft_strlcpy.c ft_strlen.c ft_strmapi.c ft_strncmp.c ft_strnstr.c \
 	ft_strrchr.c ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c \
 	ft_strjoin.c ft_strlcat.c strdup_safe.c ft_split_cs.c \
-	ft_count_strs.c ft_free_strs.c ft_strcpy.c
+	ft_count_strs.c ft_free_strs.c ft_strcpy.c ft_strspn.c
 
 MEMORY_SRC_FILES = ft_bzero.c ft_calloc.c ft_memchr.c ft_memcmp.c ft_memcpy.c \
 				   ft_memmove.c ft_memset.c

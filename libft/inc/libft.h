@@ -61,6 +61,7 @@ char		**ft_split_cs(char const *s, char *cs);
 size_t		ft_count_strs(char **strs);
 void		ft_free_strs(char **strs);
 char		*ft_strcpy(char *dst, char *src);
+size_t		ft_strspn(const char *s, const char *accept);
 
 /* MATH */
 int			ft_atoi(const char *nptr);
@@ -97,6 +98,7 @@ void		ft_lstdelone(t_list *lst, void (*del)(void *));
 void		ft_lstclear(t_list **lst, void (*del)(void *));
 void		ft_lstiter(t_list *lst, void (*f)(void *));
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+void		ft_lstfree(t_list *lst);
 
 /* DLISTS */
 typedef struct s_dlist
