@@ -150,7 +150,7 @@ u_int8_t **convert_map(t_list *char_map, size_t lines, t_position *start)
 	return (map);
 }
 
-void	print_map(u_int8_t **map)
+void	print_map(u_int8_t **map, bool free_map)
 {
 	int	i;
 	int	j;
@@ -164,10 +164,12 @@ void	print_map(u_int8_t **map)
 			j++;
 		}
 		ft_printf("\n");
-		free(map[i]);
+		if (free_map)
+			free(map[i]);
 		i++;
 	}
-	free(map);
+	if (free_map)
+		free(map);
 }
 
 
