@@ -36,7 +36,7 @@ static void	get_surrounding_cells(t_position pos, t_position *surrounding_cells)
 }
 
 /**
- * @brief Performs a breadth-first search on the map
+ * @brief performs a breadth-first search on the map
  *
  * @param map 2D array representing the map
  * @param start Starting position
