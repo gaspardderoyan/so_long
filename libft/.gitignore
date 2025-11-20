@@ -1,0 +1,7 @@
+tests/
+libftTester/
+libft-war-machine/
+*.swp
+*.o
+a.out
+libft.a
