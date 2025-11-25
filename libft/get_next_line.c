@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
 
 /* frees line & resets buffer when malloc fails or read errors */
 static void	cleanup_line(char **line, char *buffer)

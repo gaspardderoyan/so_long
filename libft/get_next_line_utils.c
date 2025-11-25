@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
 
-size_t	strlen_safe(const char *s)
+static size_t	strlen_safe(const char *s)
 {
 	size_t	i;
 
@@ -22,53 +22,6 @@ size_t	strlen_safe(const char *s)
 	while (s[i])
 		i++;
 	return (i);
-}
-
-char	*ft_strcpy(char *dst, char *src)
-{
-	while (*src)
-	{
-		*dst = *src;
-		dst++;
-		src++;
-	}
-	*dst = 0;
-	return (dst);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	int	i;
-
-	i = 0;
-	while (s[i] || s[i] == '\0')
-	{
-		if (s[i] == (char)c)
-			return ((char *)&s[i]);
-		if (s[i] == '\0')
-			break ;
-		i++;
-	}
-	return (NULL);
-}
-
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	void	*ptr;
-	size_t	i;
-
-	if (!dest && !src)
-		return (NULL);
-	i = 0;
-	ptr = dest;
-	while (i < n)
-	{
-		*(char *)dest = *(char *)src;
-		dest++;
-		src++;
-		i++;
-	}
-	return (ptr);
 }
 
 /* joins line & buffer into new string, frees old line

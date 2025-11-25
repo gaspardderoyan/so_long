@@ -34,7 +34,10 @@ MY_SOURCES = \
 	ft_strtrim.c \
 	ft_substr.c \
 	ft_tolower.c \
-	ft_toupper.c
+	ft_toupper.c \
+	ft_strcpy.c \
+	get_next_line.c \
+	get_next_line_utils.c
 
 MY_OBJECTS = $(MY_SOURCES:.c=.o)
 
