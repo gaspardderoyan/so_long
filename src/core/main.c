@@ -32,4 +32,20 @@ void	check_args(int ac, char **av)
 int	main(int ac, char **av)
 {
 	check_args(ac, av);
+	int fd = open(av[1], O_RDONLY);
+	t_list *map_lst;
+	char *line;
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (!line)
+				  break ;
+		ft_lstadd_front(&map_lst, ft_lstnew(line));
+	}
+	int i = 0;
+	while (map_lst)
+	{
+		printf("%d: %s\n", i++, (char *)map_lst->content);
+		map_lst = map_lst->next;
+	}
 }

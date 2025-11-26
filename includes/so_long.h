@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 
 typedef struct s_map {
 	char	**map;
