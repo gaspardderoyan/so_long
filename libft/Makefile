@@ -37,20 +37,18 @@ MY_SOURCES = \
 	ft_toupper.c \
 	ft_strcpy.c \
 	get_next_line.c \
-	get_next_line_utils.c
+	get_next_line_utils.c \
+	ft_lstnew.c \
+	ft_lstadd_front.c \
+	ft_lstsize.c \
+	ft_lstlast.c \
+	ft_lstadd_back.c \
+	ft_lstdelone.c \
+	ft_lstclear.c \
+	ft_lstiter.c \
+	ft_lstmap.c
 
 MY_OBJECTS = $(MY_SOURCES:.c=.o)
-
-BONUS_OBJECTS = \
-	ft_lstnew.o \
-	ft_lstadd_front.o \
-	ft_lstsize.o \
-	ft_lstlast.o \
-	ft_lstadd_back.o \
-	ft_lstdelone.o \
-	ft_lstclear.o \
-	ft_lstiter.o \
-	ft_lstmap.o
 
 CC = cc
 
@@ -65,14 +63,13 @@ $(NAME): $(MY_OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(MY_OBJECTS) $(BONUS_OBJECTS)
+	rm -f $(MY_OBJECTS)
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
 
-bonus: $(MY_OBJECTS) $(BONUS_OBJECTS)
-	ar rcs $(NAME) $(MY_OBJECTS) $(BONUS_OBJECTS)
+bonus: all
 
 .PHONY: all clean fclean re bonus
