@@ -12,9 +12,9 @@
 
 #include "../mlx/mlx.h"
 #include "../libft/libft.h"
-#include "get_next_line.h"
 #include <stdbool.h>
 #include <unistd.h>
+#include <string.h>
 
 typedef struct s_map {
 	char	**map;
