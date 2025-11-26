@@ -1,7 +1,7 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Includes -Ilibft
+CFLAGS = -Wall -Wextra -Werror -Iincludes -Ilibft -Imlx
 
-SRC_DIR = src
+SRC_DIR = src/core
 OBJ_DIR = obj
 
 LIBFT_DIR = libft
@@ -12,7 +12,20 @@ MLX = $(MLX_DIR)/libmlx.a
 
 NAME = so_long
 
-SRCS = main.c
+SRCS = $(SRC_DIR)/main.c
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+# Detect OS
+UNAME_S := $(shell uname -s)
+
+# OS-specific linking flags
+ifeq ($(UNAME_S),Darwin)
+	# macOS
+	LFLAGS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit
+else
+	# Linux
+	LFLAGS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
+endif
 
 .PHONY: all clean fclean libft re
 
@@ -23,8 +36,8 @@ SRCS = main.c
 all: $(NAME)
 
 # Build the main executable
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(MAIN_OBJ) $(OBJS) $(DEBUGFLAGS) -o $(NAME) -L$(LIBFT_DIR) -lft 
+$(NAME): $(OBJS) $(LIBFT) $(MLX)
+	$(CC) $(CFLAGS) $(OBJS) $(DEBUGFLAGS) -o $(NAME) $(LFLAGS) 
 
 # Compile the object files for main sources
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
