@@ -32,6 +32,7 @@ char *ft_substr(char const *s, unsigned int start, size_t len) {
   return (sub);
 }
 
+/*
 int main(void) {
   char *s;
 
@@ -39,3 +40,4 @@ int main(void) {
   printf("Dest --> %s\n", s);
   return (0);
 }
+*/

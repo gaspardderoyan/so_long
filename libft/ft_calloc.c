@@ -21,6 +21,7 @@
   return (ptr);
 }
 
+/*
 int main(void) {
   int *arr;
   int *arr2;
@@ -34,7 +35,8 @@ int main(void) {
     printf("Memory allocation failed!\n");
   if (!arr2)
     printf("Memory allocation failed!\n");
-  /* while (n--) */
-  /* 	printf("%d\n", arr[n - 1]); */
+  while (n--)
+	  printf("%d\n", arr[n - 1]);
   return (0);
 }
+*/
