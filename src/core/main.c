@@ -33,19 +33,35 @@ int	main(int ac, char **av)
 {
 	check_args(ac, av);
 	int fd = open(av[1], O_RDONLY);
-	t_list *map_lst;
+	// TODO: read file into list
+	t_list *map_lst = NULL;
 	char *line;
 	while (1)
 	{
 		line = get_next_line(fd);
 		if (!line)
 				  break ;
-		ft_lstadd_front(&map_lst, ft_lstnew(line));
+		ft_lstadd_back(&map_lst, ft_lstnew(line));
 	}
+
+
+	// TODO: transform list to char**
+	char **map = malloc(sizeof(char *) * (ft_lstsize(map_lst) + 1));
+	if (!map)
+		exit_error("Couldn't malloc for the **map.\n");
 	int i = 0;
+	t_list	*tmp;
 	while (map_lst)
 	{
-		printf("%d: %s\n", i++, (char *)map_lst->content);
-		map_lst = map_lst->next;
+		tmp = map_lst->next;
+		map[i] = map_lst->content;
+		i++;
+		free(map_lst);
+		map_lst = tmp;
 	}
+	map[i] = NULL;
+
+
+	for (int i = 0; map[i]; i++)
+		printf("%s", map[i]);
 }
