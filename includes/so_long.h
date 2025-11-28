@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/11/28 22:48:27 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:07:44 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 typedef struct s_map {
 	char	**map;
 	t_list	*map_lst;
-	int		width;
-	int		height;
-	int		coin_total;
-	int		coin_count;
-	int		exit_count;
-	int		player_count;
+	size_t		width;
+	size_t		height;
+	size_t		coin_total;
+	size_t		coin_count;
+	size_t		exit_count;
+	size_t		player_count;
 } t_map ;

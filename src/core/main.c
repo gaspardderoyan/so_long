@@ -6,17 +6,16 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/11/28 23:05:39 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:15:36 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/so_long.h"
+#include <stddef.h>
 
 size_t	ft_strspn(const char *s, const char *accept)
 {
 	int		i;
-	int		j;
-	bool	found;
 
 	i = 0;
 	if (!s || !accept)
@@ -33,8 +32,6 @@ size_t	ft_strspn(const char *s, const char *accept)
 const char	*ft_strpbrk(const char *s, const char *accept)
 {
 	int		i;
-	int		j;
-	bool	found;
 
 	i = 0;
 	if (!s || !accept)
@@ -145,7 +142,7 @@ void	lst_to_strs(t_map *map)
 void	check_map(t_map *map)
 {
 	size_t	i;
-	int		len;
+	size_t	len;
 
 	i = 0;
 	map->width = ft_strlen(map->map[0]);
@@ -156,6 +153,8 @@ void	check_map(t_map *map)
 			exit_error("Line too short!.\n");
 		if (map->width != len)
 			exit_error("Map with unequal line length.\n");
+		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
+			printf("map->map[i]: %s\n", map->map[i]);
 		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
 			exit_error("First or last column not only obstacles");
 		map->exit_count += get_chars_count(map->map[i], "E");
