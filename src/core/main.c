@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/11/28 23:15:36 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:20:20 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,12 +125,14 @@ void	lst_to_strs(t_map *map)
 
 	map->map = malloc(sizeof(char *) * (ft_lstsize(map->map_lst) + 1));
 	if (!map->map)
-		exit_error("Couldn't malloc for the **map.\n");
+		exit_error("Couldn't malloc for the **map.");
 	i = 0;
 	while (map->map_lst)
 	{
 		tmp = map->map_lst->next;
 		map->map[i] = map->map_lst->content;
+		if (tmp)
+			map->map[i][ft_strlen(map->map[i]) - 1] = 0;
 		i++;
 		free(map->map_lst);
 		map->map_lst = tmp;
@@ -150,9 +152,11 @@ void	check_map(t_map *map)
 	{
 		len = ft_strlen(map->map[i]);
 		if (len == 0)
-			exit_error("Line too short!.\n");
+			exit_error("Line too short!.");
 		if (map->width != len)
-			exit_error("Map with unequal line length.\n");
+			exit_error("Map with unequal line length.");
+		if (ft_strspn(map->map[i], "01CEP") != map->width)
+			exit_error("Map with wrong tile.");
 		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
 			printf("map->map[i]: %s\n", map->map[i]);
 		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
@@ -162,8 +166,8 @@ void	check_map(t_map *map)
 		map->player_count += get_chars_count(map->map[i], "P");
 		i++;
 	}
-	if (ft_strspn(map->map[0], "!") != map->width ||
-		ft_strspn(map->map[map->height - 1], "!") != map->width)
+	if (ft_strspn(map->map[0], "1") != map->width ||
+		ft_strspn(map->map[map->height - 1], "1") != map->width)
 			exit_error("First or last row not only obstacles.");
 	if (map->exit_count != 1 || map->player_count != 1 ||
 		map->coin_count < 1)
@@ -181,6 +185,6 @@ int	main(int ac, char **av)
 	lst_to_strs(&map);
 	check_map(&map);
 	for (int i = 0; map.map[i]; i++)
-		printf("%s", map.map[i]);
+		printf("%s\n", map.map[i]);
 
 }
