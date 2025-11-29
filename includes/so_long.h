@@ -18,8 +18,8 @@
 #include <fcntl.h>
 
 typedef struct s_pos {
-	int	x;
-	int	y;
+	size_t	x;
+	size_t	y;
 }	t_pos ;
 
 typedef struct s_map {

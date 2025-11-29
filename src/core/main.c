@@ -13,6 +13,18 @@
 #include "../../includes/so_long.h"
 #include <stddef.h>
 
+size_t	ft_strlen_safe(char *str)
+{
+	size_t	len;	
+
+	if (!str)
+		return (0);
+	len = 0;
+	while (str[len])
+		len++;
+	return (len);
+}
+
 size_t	ft_strspn(const char *s, const char *accept)
 {
 	int		i;
@@ -85,7 +97,7 @@ void	check_args(int ac, char **av)
 	if (ac != 2)
 		exit_error("Please provide exactly 1 .ber map.\n");
 	last_dot = ft_strrchr(av[1], '.');
-	if (strcmp(last_dot, ".ber"))
+	if (!last_dot || strcmp(last_dot, ".ber"))
 		exit_error("The map must be in .ber format.\n");
 }
 
@@ -134,7 +146,7 @@ void	lst_to_strs(t_map *map)
 		tmp = map->map_lst->next;
 		map->map[i] = map->map_lst->content;
 		if (tmp)
-			map->map[i][ft_strlen(map->map[i]) - 1] = 0;
+			map->map[i][ft_strlen_safe(map->map[i]) - 1] = 0;
 		i++;
 		free(map->map_lst);
 		map->map_lst = tmp;
@@ -149,10 +161,10 @@ void	check_map_loop(t_map *map)
 	size_t	len;
 
 	i = 0;
-	map->width = ft_strlen(map->map[0]);
+	map->width = ft_strlen_safe(map->map[0]);
 	while (map->map[i])
 	{
-		len = ft_strlen(map->map[i]);
+		len = ft_strlen_safe(map->map[i]);
 		if (len == 0)
 			exit_error("Line too short!.");
 		if (map->width != len)
@@ -217,7 +229,8 @@ void	copy_map(t_map *map)
 void	flood_fill(t_map *map, t_pos pos)
 {
 	if (pos.x < 0 || pos.y < 0 || pos.x >= map->height ||
-		pos.y >= map->width || map->map_copy[pos.x][pos.y] == '1')
+		pos.y >= map->width || map->map_copy[pos.x][pos.y] == '1' ||
+		map->map_copy[pos.x][pos.y] == 'X')
 		return ;
 	if (map->map_copy[pos.x][pos.y] == 'E')
 		map->exit_total++;
@@ -254,4 +267,6 @@ int	main(int ac, char **av)
 	
 	for (int i = 0; map.map[i]; i++)
 		printf("%s\n", map.map[i]);
+	for (int i = 0; map.map_copy[i]; i++)
+		printf("%s\n", map.map_copy[i]);
 }
