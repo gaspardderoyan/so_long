@@ -25,6 +25,18 @@ size_t	ft_strlen_safe(char *str)
 	return (len);
 }
 
+int	ft_strcmp(char *s1, char *s2)
+{
+	while (*s1 && *s2)
+	{
+		if (*s1 != *s2)
+			return (*s1 - *s2);
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
+}
+
 size_t	ft_strspn(const char *s, const char *accept)
 {
 	int		i;
@@ -97,7 +109,7 @@ void	check_args(int ac, char **av)
 	if (ac != 2)
 		exit_error("Please provide exactly 1 .ber map.\n");
 	last_dot = ft_strrchr(av[1], '.');
-	if (!last_dot || strcmp(last_dot, ".ber"))
+	if (!last_dot || ft_strcmp(last_dot, ".ber"))
 		exit_error("The map must be in .ber format.\n");
 }
 
