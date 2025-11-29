@@ -12,18 +12,6 @@
 
 #include "libft.h"
 
-static size_t	strlen_safe(const char *s)
-{
-	size_t	i;
-
-	if (!s)
-		return (0);
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
 /* joins line & buffer into new string, frees old line
  * if nl_char exists, only copies up to & including newline
  * otherwise copies entire buffer content */

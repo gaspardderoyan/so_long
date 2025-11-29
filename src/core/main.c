@@ -99,7 +99,7 @@ size_t	get_chars_count(const char *str, char *chars)
 void	exit_error(char *msg)
 {
 	// TODO: add cleanup of memory
-	printf("Error: %s\n", msg);
+	ft_printf("Error: %s\n", msg);
 	exit(1);
 }
 void	check_args(int ac, char **av)
@@ -188,8 +188,6 @@ void	check_map_loop(t_map *map)
 			exit_error("Map with unequal line length.");
 		if (ft_strspn(map->map[i], "01CEP") != map->width)
 			exit_error("Map with wrong tile.");
-		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
-			printf("map->map[i]: %s\n", map->map[i]);
 		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
 			exit_error("First or last column not only obstacles");
 		map->exit_count += get_chars_count(map->map[i], "E");
@@ -283,7 +281,7 @@ int	main(int ac, char **av)
 	flood_fill_check(&map);
 	
 	for (int i = 0; map.map[i]; i++)
-		printf("%s\n", map.map[i]);
+		ft_printf("%s\n", map.map[i]);
 	for (int i = 0; map.map_copy[i]; i++)
-		printf("%s\n", map.map_copy[i]);
+		ft_printf("%s\n", map.map_copy[i]);
 }

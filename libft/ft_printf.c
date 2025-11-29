@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
-#include "types.h"
+#include "libft.h"
 
 void	choose_fun(va_list *ptr, const char **str, int *ccount)
 {

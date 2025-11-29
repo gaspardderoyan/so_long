@@ -46,7 +46,12 @@ MY_SOURCES = \
 	ft_lstdelone.c \
 	ft_lstclear.c \
 	ft_lstiter.c \
-	ft_lstmap.c
+	ft_lstmap.c \
+	ft_printf.c \
+	ft_printf_helpers.c \
+	ft_printf_types.c \
+	ft_printf_types_nbr.c \
+	ft_strlen_safe.c
 
 MY_OBJECTS = $(MY_SOURCES:.c=.o)
 

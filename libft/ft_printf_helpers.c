@@ -10,19 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "helpers.h"
-
-size_t	strlen_safe(const char *s)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
+#include "libft.h"
 
 static int	ft_nbrlen_base(unsigned long long n, int base)
 {

@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "helpers.h"
-#include "types.h"
+#include "libft.h"
 
 void	p_char(va_list *ptr, int *ccount)
 {

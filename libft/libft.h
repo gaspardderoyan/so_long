@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdarg.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
@@ -78,5 +79,18 @@ t_list *ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 char    *ft_strcpy(char *dst, char *src);
 char	*get_next_line(int fd);
 char	*join_lnb(char **line, char *buffer, char *nl_char);
+size_t	strlen_safe(const char *s);
+
+void				p_char(va_list *ptr, int *ccount);
+void				p_int(va_list *ptr, int *ccount);
+void				p_percent(int *ccount);
+void				p_else(const char *str, int *ccount);
+void				p_str(va_list *ptr, int *ccount);
+void				p_ptr(va_list *ptr, int *ccount);
+void				p_ulong(va_list *ptr, int *ccount);
+void				p_ubase(va_list *ptr, int *ccount, char *base);
+char				*ft_itoa_base(unsigned long long n, char *base);
+int					ft_printf(const char *str, ...);
+
 
 #endif
