@@ -136,6 +136,7 @@ void	lst_to_strs(t_map *map)
 {
 	int		i;
 	t_list	*tmp;
+	size_t	len;
 
 	map->map = malloc(sizeof(char *) * (ft_lstsize(map->map_lst) + 1));
 	if (!map->map)
@@ -146,7 +147,11 @@ void	lst_to_strs(t_map *map)
 		tmp = map->map_lst->next;
 		map->map[i] = map->map_lst->content;
 		if (tmp)
-			map->map[i][ft_strlen_safe(map->map[i]) - 1] = 0;
+		{
+			len = ft_strlen_safe(map->map[i]);
+			if (len > 0 && map->map[i][len - 1] == '\n')
+				map->map[i][len - 1] = 0;
+		}
 		i++;
 		free(map->map_lst);
 		map->map_lst = tmp;
