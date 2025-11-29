@@ -95,9 +95,11 @@ void	init_struct(t_map *map)
 	map->exit_count = 0;
 	map->player_count = 0;
 	map->coin_total = 0;
+	map->exit_total = 0;
 	map->height = 0;
 	map->width = 0;
 	map->map = NULL;
+	map->map_copy = NULL;
 	map->map_lst = NULL;
 }
 
@@ -141,7 +143,7 @@ void	lst_to_strs(t_map *map)
 	map->height = i;
 }
 
-void	check_map(t_map *map)
+void	check_map_loop(t_map *map)
 {
 	size_t	i;
 	size_t	len;
@@ -166,13 +168,74 @@ void	check_map(t_map *map)
 		map->player_count += get_chars_count(map->map[i], "P");
 		i++;
 	}
+}
+
+void	check_map_final(t_map *map)
+{
+	int		i;
+	char	*start;
+
 	if (ft_strspn(map->map[0], "1") != map->width ||
 		ft_strspn(map->map[map->height - 1], "1") != map->width)
 			exit_error("First or last row not only obstacles.");
 	if (map->exit_count != 1 || map->player_count != 1 ||
 		map->coin_count < 1)
 		exit_error("Wrong count of 'exit','player' or 'coin' tiles.");
+	i = 0;
+	start = NULL;
+	while (map->map[i])
+	{
+		start = ft_strchr(map->map[i], 'P');
+		if (start)
+		{
+			map->start.x = i;
+			map->start.y = start - map->map[i];
+			return ;
+		}
+		i++;
+	}
+}
 
+void	copy_map(t_map *map)
+{
+	int		i;
+
+	i = 0;
+	map->map_copy = malloc(sizeof(char *) * (map->height + 1));
+	if (!map->map_copy)
+		exit_error("You've ran out of memory!");
+	while (map->map[i])
+	{
+		map->map_copy[i] = ft_strdup(map->map[i]);
+		if (!map->map_copy[i])
+			exit_error("You've ran out of memory!");
+		i++;
+	}
+	map->map_copy[i] = NULL;
+}
+
+void	flood_fill(t_map *map, t_pos pos)
+{
+	if (pos.x < 0 || pos.y < 0 || pos.x >= map->height ||
+		pos.y >= map->width || map->map_copy[pos.x][pos.y] == '1')
+		return ;
+	if (map->map_copy[pos.x][pos.y] == 'E')
+		map->exit_total++;
+	else if (map->map_copy[pos.x][pos.y] == 'C')
+		map->coin_total++;
+	map->map_copy[pos.x][pos.y] = 'X';
+	flood_fill(map, (t_pos){pos.x + 1, pos.y});
+	flood_fill(map, (t_pos){pos.x, pos.y + 1});
+	flood_fill(map, (t_pos){pos.x - 1, pos.y});
+	flood_fill(map, (t_pos){pos.x, pos.y - 1});
+}
+
+void	flood_fill_check(t_map *map)
+{
+	if (map->coin_count != map->coin_total)
+		exit_error("Not all coins are reachable!");
+	if (map->exit_count != map->exit_total)
+		exit_error("The exit isn't reachable!");
 }
 
 int	main(int ac, char **av)
@@ -183,8 +246,12 @@ int	main(int ac, char **av)
 	check_args(ac, av);
 	read_file_to_lst(av[1], &map.map_lst);
 	lst_to_strs(&map);
-	check_map(&map);
+	check_map_loop(&map);
+	check_map_final(&map);
+	copy_map(&map);
+	flood_fill(&map, map.start);
+	flood_fill_check(&map);
+	
 	for (int i = 0; map.map[i]; i++)
 		printf("%s\n", map.map[i]);
-
 }

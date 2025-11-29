@@ -17,13 +17,21 @@
 #include <string.h>
 #include <fcntl.h>
 
+typedef struct s_pos {
+	int	x;
+	int	y;
+}	t_pos ;
+
 typedef struct s_map {
 	char	**map;
+	char	**map_copy;
 	t_list	*map_lst;
-	size_t		width;
-	size_t		height;
-	size_t		coin_total;
-	size_t		coin_count;
-	size_t		exit_count;
-	size_t		player_count;
-} t_map ;
+	size_t	width;
+	size_t	height;
+	size_t	coin_total;
+	size_t	exit_total;
+	size_t	coin_count;
+	size_t	exit_count;
+	size_t	player_count;
+	t_pos	start;
+}	t_map ;
