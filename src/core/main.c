@@ -295,6 +295,33 @@ void load_all_textures(t_map *map)
     map->textures.wall = load_texture(map, "./textures/wall.xpm");
 }
 
+void	render_map(t_map *map)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (map->map[i])
+	{
+		j = 0;
+		while (map->map[i][j])
+		{
+			mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, j * TILE_SIZE, i * TILE_SIZE);
+			if (map->map[i][j] == '1')
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.wall.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map->map[i][j] == 'C')
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.collectible.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map->map[i][j] == 'E')
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map->map[i][j] == 'P')
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, j * TILE_SIZE, i * TILE_SIZE);
+			j++;
+		}
+		i++;
+	}
+
+}
+
 int	main(int ac, char **av)
 {
 	t_map map;
@@ -309,38 +336,10 @@ int	main(int ac, char **av)
 	flood_fill(&map, map.start);
 	flood_fill_check(&map);
 	
-	/*
-	for (int i = 0; map.map[i]; i++)
-		ft_printf("%s\n", map.map[i]);
-	for (int i = 0; map.map_copy[i]; i++)
-		ft_printf("%s\n", map.map_copy[i]);
-	*/
-
 	map.mlx = mlx_init();
 	map.mlx_win = mlx_new_window(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE, "My first window");
 	load_all_textures(&map);
-
-	// TODO: render map function
-	int i = 0;
-	int j;
-	while (map.map[i])
-	{
-		j = 0;
-		while (map.map[i][j])
-		{
-			mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.floor.img, j * TILE_SIZE, i * TILE_SIZE);
-			if (map.map[i][j] == '1')
-				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.wall.img, j * TILE_SIZE, i * TILE_SIZE);
-			else if (map.map[i][j] == 'C')
-				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.collectible.img, j * TILE_SIZE, i * TILE_SIZE);
-			else if (map.map[i][j] == 'E')
-				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.exit.img, j * TILE_SIZE, i * TILE_SIZE);
-			else if (map.map[i][j] == 'P')
-				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.player.img, j * TILE_SIZE, i * TILE_SIZE);
-			j++;
-		}
-		i++;
-	}
+	render_map(&map);
 
 	mlx_loop(map.mlx);
 }
