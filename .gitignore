@@ -1,3 +1,5 @@
 .clangd
 so_long
 obj/
+*.o
+*.a

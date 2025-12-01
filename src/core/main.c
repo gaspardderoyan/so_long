@@ -266,6 +266,14 @@ void	flood_fill_check(t_map *map)
 		exit_error("The exit isn't reachable!");
 }
 
+void	my_mlx_pixel_put(t_mlx_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_px / 8));
+	*(unsigned int*)dst = color;
+}
+
 int	main(int ac, char **av)
 {
 	t_map map;
@@ -284,4 +292,13 @@ int	main(int ac, char **av)
 		ft_printf("%s\n", map.map[i]);
 	for (int i = 0; map.map_copy[i]; i++)
 		ft_printf("%s\n", map.map_copy[i]);
+
+	t_mlx_data	img;
+	map.mlx = mlx_init();
+	map.mlx_win = mlx_new_window(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE, "My first window");
+	img.img = mlx_new_image(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_px, &img.line_length, &img.endian);
+	my_mlx_pixel_put(&img, TILE_SIZE, TILE_SIZE, 0x85c60500);
+	mlx_put_image_to_window(map.mlx, map.mlx_win, img.img, 0, 0);
+	mlx_loop(map.mlx);
 }

@@ -10,17 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../mlx/mlx.h"
-#include "../libft/libft.h"
-#include <stdbool.h>
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
+#ifndef SO_LONG_H
+# define SO_LONG_H
+# include "../mlx/mlx.h"
+# include "../libft/libft.h"
+# include <stdbool.h>
+# include <unistd.h>
+# include <string.h>
+# include <fcntl.h>
+# define TILE_SIZE 25
 
 typedef struct s_pos {
 	size_t	x;
 	size_t	y;
 }	t_pos ;
+
+typedef struct s_mlx_data {
+	void	*img;
+	void	*addr;
+	int		bits_per_px;
+	int		line_length;
+	int		endian;
+} t_mlx_data;
 
 typedef struct s_map {
 	char	**map;
@@ -34,4 +45,8 @@ typedef struct s_map {
 	size_t	exit_count;
 	size_t	player_count;
 	t_pos	start;
+	void	*mlx;
+	void	*mlx_win;
 }	t_map ;
+
+#endif
