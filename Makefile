@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Iincludes -Ilibft -Imlx
+CFLAGS = -Wall -Wextra -Werror -Iincludes -Ilibft -I$(MLX_DIR)
 
 SRC_DIR = src/core
 OBJ_DIR = obj
@@ -7,16 +7,19 @@ OBJ_DIR = obj
 LIBFT_DIR = libft
 LIBFT= $(LIBFT_DIR)/libft.a
 
-MLX_DIR = mlx
+# Detect OS for MLX directory
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	MLX_DIR = mlx_mac
+else
+	MLX_DIR = mlx
+endif
 MLX = $(MLX_DIR)/libmlx.a
 
 NAME = so_long
 
 SRCS = $(SRC_DIR)/main.c
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-
-# Detect OS
-UNAME_S := $(shell uname -s)
 
 # OS-specific linking flags
 ifeq ($(UNAME_S),Darwin)
@@ -59,8 +62,8 @@ $(MLX):
 # Clean object files and libft's objs
 clean:
 	$(MAKE) -C $(LIBFT_DIR) clean
-	# Only run mlx clean if Makefile.gen exists (prevents error on fresh clone)
-	@if [ -f $(MLX_DIR)/Makefile.gen ]; then $(MAKE) -C $(MLX_DIR) clean; fi
+	# Only run mlx clean if directory has a Makefile (prevents error on fresh clone)
+	@if [ -f $(MLX_DIR)/Makefile ] || [ -f $(MLX_DIR)/Makefile.gen ]; then $(MAKE) -C $(MLX_DIR) clean; fi
 	rm -rf $(OBJ_DIR)
 
 fclean: clean
