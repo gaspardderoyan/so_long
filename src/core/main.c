@@ -298,7 +298,11 @@ int	main(int ac, char **av)
 	map.mlx_win = mlx_new_window(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE, "My first window");
 	img.img = mlx_new_image(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_px, &img.line_length, &img.endian);
-	my_mlx_pixel_put(&img, TILE_SIZE, TILE_SIZE, 0x85c60500);
+	for (int i = 0; i < TILE_SIZE; i++)
+	{
+		for (int j = 0; j < TILE_SIZE; j++)
+			my_mlx_pixel_put(&img, i, j, 0x0085c605);
+	}
 	mlx_put_image_to_window(map.mlx, map.mlx_win, img.img, 0, 0);
 	mlx_loop(map.mlx);
 }
