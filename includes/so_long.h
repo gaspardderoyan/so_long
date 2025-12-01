@@ -18,7 +18,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <fcntl.h>
-# define TILE_SIZE 25
+# define TILE_SIZE 64
 
 typedef struct s_pos {
 	size_t	x;
@@ -31,7 +31,18 @@ typedef struct s_mlx_data {
 	int		bits_per_px;
 	int		line_length;
 	int		endian;
+	int		width;
+	int		height;
 } t_mlx_data;
+
+typedef struct s_textures {
+	t_mlx_data	wall;	
+	t_mlx_data	exit;	
+	t_mlx_data	player;	
+	t_mlx_data	collectible;	
+	t_mlx_data	floor;	
+	t_mlx_data	p_e_floor;	
+} t_textures ;
 
 typedef struct s_map {
 	char	**map;
@@ -47,6 +58,7 @@ typedef struct s_map {
 	t_pos	start;
 	void	*mlx;
 	void	*mlx_win;
+	t_textures	textures;
 }	t_map ;
 
 #endif

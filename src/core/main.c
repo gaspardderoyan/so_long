@@ -274,6 +274,27 @@ void	my_mlx_pixel_put(t_mlx_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
+t_mlx_data	load_texture(t_map *map, char *path)
+{
+	t_mlx_data	img;
+
+	img.img = mlx_xpm_file_to_image(map->mlx, path, &img.width, &img.height);
+	if (!img.img)
+		exit_error("Texture could not be loaded. Check file path!");
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_px, &img.line_length, &img.endian);
+	return (img);
+}
+
+void load_all_textures(t_map *map)
+{
+    map->textures.collectible = load_texture(map, "./textures/collectible.xpm");
+    map->textures.floor = load_texture(map, "./textures/floor.xpm");
+    map->textures.p_e_floor = load_texture(map, "./textures/p_e_floor.xpm");
+    map->textures.exit = load_texture(map, "./textures/exit.xpm");
+    map->textures.player = load_texture(map, "./textures/player.xpm");
+    map->textures.wall = load_texture(map, "./textures/wall.xpm");
+}
+
 int	main(int ac, char **av)
 {
 	t_map map;
@@ -288,21 +309,38 @@ int	main(int ac, char **av)
 	flood_fill(&map, map.start);
 	flood_fill_check(&map);
 	
+	/*
 	for (int i = 0; map.map[i]; i++)
 		ft_printf("%s\n", map.map[i]);
 	for (int i = 0; map.map_copy[i]; i++)
 		ft_printf("%s\n", map.map_copy[i]);
+	*/
 
-	t_mlx_data	img;
 	map.mlx = mlx_init();
 	map.mlx_win = mlx_new_window(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE, "My first window");
-	img.img = mlx_new_image(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_px, &img.line_length, &img.endian);
-	for (int i = 0; i < TILE_SIZE; i++)
+	load_all_textures(&map);
+
+	// TODO: render map function
+	int i = 0;
+	int j;
+	while (map.map[i])
 	{
-		for (int j = 0; j < TILE_SIZE; j++)
-			my_mlx_pixel_put(&img, i, j, 0x0085c605);
+		j = 0;
+		while (map.map[i][j])
+		{
+			mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.floor.img, j * TILE_SIZE, i * TILE_SIZE);
+			if (map.map[i][j] == '1')
+				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.wall.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map.map[i][j] == 'C')
+				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.collectible.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map.map[i][j] == 'E')
+				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.exit.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map.map[i][j] == 'P')
+				mlx_put_image_to_window(map.mlx, map.mlx_win, map.textures.player.img, j * TILE_SIZE, i * TILE_SIZE);
+			j++;
+		}
+		i++;
 	}
-	mlx_put_image_to_window(map.mlx, map.mlx_win, img.img, 0, 0);
+
 	mlx_loop(map.mlx);
 }
