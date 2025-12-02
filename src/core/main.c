@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 16:36:22 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 17:24:17 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ void	init_struct(t_map *map)
 	map->map_copy = NULL;
 	map->map_lst = NULL;
 	map->moves = 0;
-	map->exit_shown = false;
 }
 
 void	read_file_to_lst(char *filename, t_list **head)
@@ -317,6 +316,8 @@ void	render_map(t_map *map)
 				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.collectible.img, j * TILE_SIZE, i * TILE_SIZE);
 			else if (map->map[i][j] == 'P')
 				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, j * TILE_SIZE, i * TILE_SIZE);
+			else if (map->map[i][j] == 'E')
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, j * TILE_SIZE, i * TILE_SIZE);
 			j++;
 		}
 		i++;
@@ -330,23 +331,23 @@ void	move_player(t_map *map, t_pos new_pos)
 
 	if (map->map[new_pos.y][new_pos.x] == '1')
 		return ;
+	map->moves++;
 	last.x = map->position.x;
 	last.y = map->position.y;
-	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y && map->exit_shown == true)
+	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y && map->coin_current == map->coin_total)
 		exit(1) ;
 	if (map->map[new_pos.y][new_pos.x] == 'C')
 		map->coin_current++;
-	if (map->coin_current == map->coin_total && map->exit_shown == false)
-	{
-		map->exit_shown = true;
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, map->exit.y * TILE_SIZE, map->exit.x * TILE_SIZE);
-	}
+	if (last.y == map->exit.y && last.x == map->exit.x)
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, last.x * TILE_SIZE, last.y * TILE_SIZE);
+	else
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, last.x * TILE_SIZE, last.y * TILE_SIZE);
 	map->map[last.y][last.x] = '0';
-	map->map[new_pos.y][new_pos.x] = 'P';
 	map->position = new_pos;
-	map->moves++;
-	mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, last.x * TILE_SIZE, last.y * TILE_SIZE);
-	mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, new_pos.x * TILE_SIZE, new_pos.y * TILE_SIZE);
+	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y)
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.p_e_floor.img, new_pos.x * TILE_SIZE, new_pos.y * TILE_SIZE);
+	else
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, new_pos.x * TILE_SIZE, new_pos.y * TILE_SIZE);
 }
 
 int	key_press_handler(int keycode, t_map *map)

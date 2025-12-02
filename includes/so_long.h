@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 16:26:13 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 17:11:54 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ typedef struct s_map {
 	void	*mlx;
 	void	*mlx_win;
 	t_textures	textures;
-	bool	exit_shown;
 }	t_map ;
 
 #endif
