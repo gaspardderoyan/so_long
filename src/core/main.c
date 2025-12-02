@@ -6,12 +6,11 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/11/28 23:20:20 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 16:36:22 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/so_long.h"
-#include <stddef.h>
 
 size_t	ft_strlen_safe(char *str)
 {
@@ -116,6 +115,7 @@ void	check_args(int ac, char **av)
 void	init_struct(t_map *map)
 {
 	map->coin_count = 0;
+	map->coin_current = 0;
 	map->exit_count = 0;
 	map->player_count = 0;
 	map->coin_total = 0;
@@ -125,6 +125,8 @@ void	init_struct(t_map *map)
 	map->map = NULL;
 	map->map_copy = NULL;
 	map->map_lst = NULL;
+	map->moves = 0;
+	map->exit_shown = false;
 }
 
 void	read_file_to_lst(char *filename, t_list **head)
@@ -197,30 +199,32 @@ void	check_map_loop(t_map *map)
 	}
 }
 
+t_pos find_char_in_map(t_map *map, char c)
+{
+    int i;
+	char *target;
+	i = 0;
+	target = NULL;
+	while (map->map[i])
+	{
+		target = ft_strchr(map->map[i], c);
+		if (target)
+			return ((t_pos){target - map->map[i], i});
+		i++;
+	}
+	return ((t_pos){0, 0});
+}
+
 void	check_map_final(t_map *map)
 {
-	int		i;
-	char	*start;
-
 	if (ft_strspn(map->map[0], "1") != map->width ||
 		ft_strspn(map->map[map->height - 1], "1") != map->width)
 			exit_error("First or last row not only obstacles.");
 	if (map->exit_count != 1 || map->player_count != 1 ||
 		map->coin_count < 1)
 		exit_error("Wrong count of 'exit','player' or 'coin' tiles.");
-	i = 0;
-	start = NULL;
-	while (map->map[i])
-	{
-		start = ft_strchr(map->map[i], 'P');
-		if (start)
-		{
-			map->start.x = i;
-			map->start.y = start - map->map[i];
-			return ;
-		}
-		i++;
-	}
+	map->position = find_char_in_map(map, 'P');
+	map->exit = find_char_in_map(map, 'E');
 }
 
 void	copy_map(t_map *map)
@@ -243,15 +247,15 @@ void	copy_map(t_map *map)
 
 void	flood_fill(t_map *map, t_pos pos)
 {
-	if (pos.x < 0 || pos.y < 0 || pos.x >= map->height ||
-		pos.y >= map->width || map->map_copy[pos.x][pos.y] == '1' ||
-		map->map_copy[pos.x][pos.y] == 'X')
+	if (pos.x < 0 || pos.y < 0 || pos.x >= (int)map->width ||
+		pos.y >= (int)map->height || map->map_copy[pos.y][pos.x] == '1' ||
+		map->map_copy[pos.y][pos.x] == 'X')
 		return ;
-	if (map->map_copy[pos.x][pos.y] == 'E')
+	if (map->map_copy[pos.y][pos.x] == 'E')
 		map->exit_total++;
-	else if (map->map_copy[pos.x][pos.y] == 'C')
+	else if (map->map_copy[pos.y][pos.x] == 'C')
 		map->coin_total++;
-	map->map_copy[pos.x][pos.y] = 'X';
+	map->map_copy[pos.y][pos.x] = 'X';
 	flood_fill(map, (t_pos){pos.x + 1, pos.y});
 	flood_fill(map, (t_pos){pos.x, pos.y + 1});
 	flood_fill(map, (t_pos){pos.x - 1, pos.y});
@@ -311,8 +315,6 @@ void	render_map(t_map *map)
 				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.wall.img, j * TILE_SIZE, i * TILE_SIZE);
 			else if (map->map[i][j] == 'C')
 				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.collectible.img, j * TILE_SIZE, i * TILE_SIZE);
-			else if (map->map[i][j] == 'E')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, j * TILE_SIZE, i * TILE_SIZE);
 			else if (map->map[i][j] == 'P')
 				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, j * TILE_SIZE, i * TILE_SIZE);
 			j++;
@@ -320,6 +322,46 @@ void	render_map(t_map *map)
 		i++;
 	}
 
+}
+
+void	move_player(t_map *map, t_pos new_pos)
+{
+	t_pos last;
+
+	if (map->map[new_pos.y][new_pos.x] == '1')
+		return ;
+	last.x = map->position.x;
+	last.y = map->position.y;
+	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y && map->exit_shown == true)
+		exit(1) ;
+	if (map->map[new_pos.y][new_pos.x] == 'C')
+		map->coin_current++;
+	if (map->coin_current == map->coin_total && map->exit_shown == false)
+	{
+		map->exit_shown = true;
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, map->exit.y * TILE_SIZE, map->exit.x * TILE_SIZE);
+	}
+	map->map[last.y][last.x] = '0';
+	map->map[new_pos.y][new_pos.x] = 'P';
+	map->position = new_pos;
+	map->moves++;
+	mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, last.x * TILE_SIZE, last.y * TILE_SIZE);
+	mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, new_pos.x * TILE_SIZE, new_pos.y * TILE_SIZE);
+}
+
+int	key_press_handler(int keycode, t_map *map)
+{
+	if (keycode == KEY_ESC)
+		exit_error("Bye bye!");
+	if (keycode == KEY_W || keycode == KEY_UP)
+		move_player(map, (t_pos){map->position.x, map->position.y - 1});
+	else if (keycode == KEY_S || keycode == KEY_DOWN)
+		move_player(map, (t_pos){map->position.x, map->position.y + 1});
+	else if (keycode == KEY_A || keycode == KEY_LEFT)
+		move_player(map, (t_pos){map->position.x - 1, map->position.y});
+	else if (keycode == KEY_D || keycode == KEY_RIGHT)
+		move_player(map, (t_pos){map->position.x + 1, map->position.y});
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -333,13 +375,14 @@ int	main(int ac, char **av)
 	check_map_loop(&map);
 	check_map_final(&map);
 	copy_map(&map);
-	flood_fill(&map, map.start);
+	flood_fill(&map, map.position);
 	flood_fill_check(&map);
 	
 	map.mlx = mlx_init();
 	map.mlx_win = mlx_new_window(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE, "My first window");
 	load_all_textures(&map);
 	render_map(&map);
+	mlx_hook(map.mlx_win, 2, (1L << 0), &key_press_handler, &map);
 
 	mlx_loop(map.mlx);
 }
