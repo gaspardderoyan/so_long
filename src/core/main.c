@@ -128,6 +128,8 @@ void	init_struct(t_map *map)
 	map->map_copy = NULL;
 	map->map_lst = NULL;
 	map->moves = 0;
+	map->mlx = NULL;
+	map->win = NULL;
 	map->textures.wall.img = NULL;
 	map->textures.floor.img = NULL;
 	map->textures.collectible.img = NULL;
@@ -379,7 +381,10 @@ void	move_player(t_map *map, t_pos new_pos)
 		render_sprite(map, last, TEX_EXIT);
 	else
 		render_sprite(map, last, TEX_FLOOR);
-	map->map[last.y][last.x] = '0';
+	if (last.y == map->exit.y && last.x == map->exit.x)
+		map->map[last.y][last.x] = 'E';
+	else
+		map->map[last.y][last.x] = '0';
 	map->position = new_pos;
 	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y)
 		render_sprite(map, new_pos, TEX_P_EXIT);
