@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 18:01:05 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:30:32 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ typedef struct s_map {
 	t_pos	position;
 	t_pos	exit;
 	void	*mlx;
-	void	*mlx_win;
+	void	*win;
 	t_textures	textures;
 }	t_map ;
 

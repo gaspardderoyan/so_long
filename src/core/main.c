@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 18:16:36 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:38:48 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	close_game(t_map *map);
 
 size_t	ft_strlen_safe(char *str)
 {
-	size_t	len;	
+	size_t	len;
 
 	if (!str)
 		return (0);
@@ -84,7 +84,7 @@ size_t	get_chars_count(const char *str, char *chars)
 	size_t	count;
 
 	count = 0;
-	if (!str || !chars)	
+	if (!str || !chars)
 		return (0);
 	while (1)
 	{
@@ -99,14 +99,13 @@ size_t	get_chars_count(const char *str, char *chars)
 
 void	exit_error(char *msg, t_map *map)
 {
-	// TODO: add cleanup of memory
 	ft_printf("Error: %s\n", msg);
 	close_game(map);
-	exit(1);
 }
+
 void	check_args(int ac, char **av, t_map *map)
 {
-	char *last_dot;
+	char	*last_dot;
 
 	if (ac != 2)
 		exit_error("Please provide exactly 1 .ber map.", map);
@@ -130,11 +129,11 @@ void	init_struct(t_map *map)
 	map->map_lst = NULL;
 	map->moves = 0;
 	map->textures.wall.img = NULL;
-    map->textures.floor.img = NULL;
-    map->textures.collectible.img = NULL;
-    map->textures.player.img = NULL;
-    map->textures.exit.img = NULL;
-    map->textures.p_e_floor.img = NULL;
+	map->textures.floor.img = NULL;
+	map->textures.collectible.img = NULL;
+	map->textures.player.img = NULL;
+	map->textures.exit.img = NULL;
+	map->textures.p_e_floor.img = NULL;
 }
 
 void	read_file_to_lst(char *filename, t_list **head, t_map *map)
@@ -149,7 +148,7 @@ void	read_file_to_lst(char *filename, t_list **head, t_map *map)
 	{
 		line = get_next_line(fd);
 		if (!line)
-				  break ;
+			break ;
 		ft_lstadd_back(head, ft_lstnew(line));
 	}
 }
@@ -198,7 +197,7 @@ void	check_map_loop(t_map *map)
 			exit_error("Map with unequal line length.", map);
 		if (ft_strspn(map->map[i], "01CEP") != map->width)
 			exit_error("Map with wrong tile.", map);
-		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
+		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')
 			exit_error("First or last column not only obstacles", map);
 		map->exit_count += get_chars_count(map->map[i], "E");
 		map->coin_count += get_chars_count(map->map[i], "C");
@@ -207,10 +206,11 @@ void	check_map_loop(t_map *map)
 	}
 }
 
-t_pos find_char_in_map(t_map *map, char c)
+t_pos	find_char_in_map(t_map *map, char c)
 {
-    int i;
-	char *target;
+	int		i;
+	char	*target;
+
 	i = 0;
 	target = NULL;
 	while (map->map[i])
@@ -225,11 +225,11 @@ t_pos find_char_in_map(t_map *map, char c)
 
 void	check_map_final(t_map *map)
 {
-	if (ft_strspn(map->map[0], "1") != map->width ||
-		ft_strspn(map->map[map->height - 1], "1") != map->width)
-			exit_error("First or last row not only obstacles.", map);
-	if (map->exit_count != 1 || map->player_count != 1 ||
-		map->coin_count < 1)
+	if (ft_strspn(map->map[0], "1") != map->width
+		|| ft_strspn(map->map[map->height - 1], "1") != map->width)
+		exit_error("First or last row not only obstacles.", map);
+	if (map->exit_count != 1 || map->player_count != 1
+		|| map->coin_count < 1)
 		exit_error("Wrong count of 'exit','player' or 'coin' tiles.", map);
 	map->position = find_char_in_map(map, 'P');
 	map->exit = find_char_in_map(map, 'E');
@@ -237,7 +237,7 @@ void	check_map_final(t_map *map)
 
 void	copy_map(t_map *map)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	map->map_copy = malloc(sizeof(char *) * (map->height + 1));
@@ -255,9 +255,9 @@ void	copy_map(t_map *map)
 
 void	flood_fill(t_map *map, t_pos pos)
 {
-	if (pos.x < 0 || pos.y < 0 || pos.x >= (int)map->width ||
-		pos.y >= (int)map->height || map->map_copy[pos.y][pos.x] == '1' ||
-		map->map_copy[pos.y][pos.x] == 'X')
+	if (pos.x < 0 || pos.y < 0 || pos.x >= (int)map->width
+		|| pos.y >= (int)map->height || map->map_copy[pos.y][pos.x] == '1'
+		|| map->map_copy[pos.y][pos.x] == 'X')
 		return ;
 	if (map->map_copy[pos.y][pos.x] == 'E')
 		map->exit_total++;
@@ -283,62 +283,63 @@ void	my_mlx_pixel_put(t_mlx_data *data, int x, int y, int color)
 	char	*dst;
 
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_px / 8));
-	*(unsigned int*)dst = color;
+	*(unsigned int *)dst = color;
 }
 
 t_mlx_data	load_texture(t_map *map, char *path)
 {
-	t_mlx_data	img;
+	t_mlx_data	i;
+	void		*p;	
 
-	img.img = mlx_xpm_file_to_image(map->mlx, path, &img.width, &img.height);
-	if (!img.img)
+	i.img = mlx_xpm_file_to_image(map->mlx, path, &i.width, &i.height);
+	if (!i.img)
 		exit_error("Texture could not be loaded. Check file path!", map);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_px, &img.line_length, &img.endian);
-	return (img);
+	p = mlx_get_data_addr(i.img, &i.bits_per_px, &i.line_length, &i.endian);
+	i.addr = p;
+	return (i);
 }
 
-void load_all_textures(t_map *map)
+void	load_all_textures(t_map *map)
 {
-    map->textures.collectible = load_texture(map, "./textures/collectible.xpm");
-    map->textures.floor = load_texture(map, "./textures/floor.xpm");
-    map->textures.p_e_floor = load_texture(map, "./textures/p_e_floor.xpm");
-    map->textures.exit = load_texture(map, "./textures/exit.xpm");
-    map->textures.player = load_texture(map, "./textures/player.xpm");
-    map->textures.wall = load_texture(map, "./textures/wall.xpm");
+	map->textures.collectible = load_texture(map, "./textures/collectible.xpm");
+	map->textures.floor = load_texture(map, "./textures/floor.xpm");
+	map->textures.p_e_floor = load_texture(map, "./textures/p_e_floor.xpm");
+	map->textures.exit = load_texture(map, "./textures/exit.xpm");
+	map->textures.player = load_texture(map, "./textures/player.xpm");
+	map->textures.wall = load_texture(map, "./textures/wall.xpm");
 }
 
-static void *get_img_ptr(t_map *map, t_tex_id type)
+static void	*get_img_ptr(t_map *map, t_tex_id type)
 {
-    if (type == TEX_WALL)
-        return (map->textures.wall.img);
-    else if (type == TEX_FLOOR)
-        return (map->textures.floor.img);
-    else if (type == TEX_PLAYER)
-        return (map->textures.player.img);
-    else if (type == TEX_COLL)
-        return (map->textures.collectible.img);
-    else if (type == TEX_EXIT)
-        return (map->textures.exit.img);
-    else if (type == TEX_P_EXIT)
-        return (map->textures.p_e_floor.img);
-    return (NULL);
+	if (type == TEX_WALL)
+		return (map->textures.wall.img);
+	else if (type == TEX_FLOOR)
+		return (map->textures.floor.img);
+	else if (type == TEX_PLAYER)
+		return (map->textures.player.img);
+	else if (type == TEX_COLL)
+		return (map->textures.collectible.img);
+	else if (type == TEX_EXIT)
+		return (map->textures.exit.img);
+	else if (type == TEX_P_EXIT)
+		return (map->textures.p_e_floor.img);
+	return (NULL);
 }
 
-void    render_sprite(t_map *map, t_pos pos, t_tex_id type)
+void	render_sprite(t_map *m, t_pos pos, t_tex_id type)
 {
-    void    *img_ptr;
+	void	*img_ptr;
 
-    img_ptr = get_img_ptr(map, type);
-    if (!img_ptr)
-        return ;
-    mlx_put_image_to_window(map->mlx, map->mlx_win, img_ptr,
-        pos.x * TS, pos.y * TS);
+	img_ptr = get_img_ptr(m, type);
+	if (!img_ptr)
+		return ;
+	mlx_put_image_to_window(m->mlx, m->win, img_ptr, pos.x * TS, pos.y * TS);
 }
 
 void	render_map(t_map *map)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (map->map[i])
@@ -359,19 +360,18 @@ void	render_map(t_map *map)
 		}
 		i++;
 	}
-
 }
 
 void	move_player(t_map *map, t_pos new_pos)
 {
-	t_pos last;
+	t_pos	last;
 
 	if (map->map[new_pos.y][new_pos.x] == '1')
 		return ;
 	ft_printf("Current movement count: %d\n", ++(map->moves));
 	last = (t_pos){map->position.x, map->position.y};
-	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y &&
-		map->coin_current == map->coin_total)
+	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y
+		&& map->coin_current == map->coin_total)
 		close_game(map);
 	if (map->map[new_pos.y][new_pos.x] == 'C')
 		map->coin_current++;
@@ -438,8 +438,8 @@ int	close_game(t_map *map)
 	if (!map)
 		exit(0);
 	destroy_images(map);
-	if (map->mlx_win)
-		mlx_destroy_window(map->mlx, map->mlx_win);
+	if (map->win)
+		mlx_destroy_window(map->mlx, map->win);
 	if (map->mlx)
 	{
 		mlx_destroy_display(map->mlx);
@@ -457,9 +457,9 @@ int	close_game(t_map *map)
 
 int	main(int ac, char **av)
 {
-	t_map m;
+	t_map	m;
 
-	init_struct(&m);	
+	init_struct(&m);
 	check_args(ac, av, &m);
 	read_file_to_lst(av[1], &m.map_lst, &m);
 	lst_to_strs(&m);
@@ -468,11 +468,11 @@ int	main(int ac, char **av)
 	copy_map(&m);
 	flood_fill(&m, m.position);
 	flood_fill_check(&m);
-	
 	m.mlx = mlx_init();
-	m.mlx_win = mlx_new_window(m.mlx, m.width * TS, m.height * TS, "./so_long");
+	m.win = mlx_new_window(m.mlx, m.width * TS, m.height * TS, "./so_long");
 	load_all_textures(&m);
 	render_map(&m);
-	mlx_hook(m.mlx_win, 2, (1L << 0), &key_press_handler, &m);
+	mlx_hook(m.win, 2, (1L << 0), &key_press_handler, &m);
+	mlx_hook(m.win, 17, 0, close_game, &m);
 	mlx_loop(m.mlx);
 }
