@@ -6,11 +6,13 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 18:05:41 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:16:36 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/so_long.h"
+
+int	close_game(t_map *map);
 
 size_t	ft_strlen_safe(char *str)
 {
@@ -95,21 +97,22 @@ size_t	get_chars_count(const char *str, char *chars)
 	return (count);
 }
 
-void	exit_error(char *msg)
+void	exit_error(char *msg, t_map *map)
 {
 	// TODO: add cleanup of memory
 	ft_printf("Error: %s\n", msg);
+	close_game(map);
 	exit(1);
 }
-void	check_args(int ac, char **av)
+void	check_args(int ac, char **av, t_map *map)
 {
 	char *last_dot;
 
 	if (ac != 2)
-		exit_error("Please provide exactly 1 .ber map.\n");
+		exit_error("Please provide exactly 1 .ber map.", map);
 	last_dot = ft_strrchr(av[1], '.');
 	if (!last_dot || ft_strcmp(last_dot, ".ber"))
-		exit_error("The map must be in .ber format.\n");
+		exit_error("The map must be in .ber format.", map);
 }
 
 void	init_struct(t_map *map)
@@ -126,16 +129,22 @@ void	init_struct(t_map *map)
 	map->map_copy = NULL;
 	map->map_lst = NULL;
 	map->moves = 0;
+	map->textures.wall.img = NULL;
+    map->textures.floor.img = NULL;
+    map->textures.collectible.img = NULL;
+    map->textures.player.img = NULL;
+    map->textures.exit.img = NULL;
+    map->textures.p_e_floor.img = NULL;
 }
 
-void	read_file_to_lst(char *filename, t_list **head)
+void	read_file_to_lst(char *filename, t_list **head, t_map *map)
 {
 	int		fd;
 	char	*line;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		exit_error("Error opening file!");
+		exit_error("Error opening file!", map);
 	while (1)
 	{
 		line = get_next_line(fd);
@@ -153,7 +162,7 @@ void	lst_to_strs(t_map *map)
 
 	map->map = malloc(sizeof(char *) * (ft_lstsize(map->map_lst) + 1));
 	if (!map->map)
-		exit_error("Couldn't malloc for the **map.");
+		exit_error("Couldn't malloc for the **map.", map);
 	i = 0;
 	while (map->map_lst)
 	{
@@ -184,13 +193,13 @@ void	check_map_loop(t_map *map)
 	{
 		len = ft_strlen_safe(map->map[i]);
 		if (len == 0)
-			exit_error("Line too short!.");
+			exit_error("Line too short!.", map);
 		if (map->width != len)
-			exit_error("Map with unequal line length.");
+			exit_error("Map with unequal line length.", map);
 		if (ft_strspn(map->map[i], "01CEP") != map->width)
-			exit_error("Map with wrong tile.");
+			exit_error("Map with wrong tile.", map);
 		if (map->map[i][0] != '1' || map->map[i][len - 1] != '1')	
-			exit_error("First or last column not only obstacles");
+			exit_error("First or last column not only obstacles", map);
 		map->exit_count += get_chars_count(map->map[i], "E");
 		map->coin_count += get_chars_count(map->map[i], "C");
 		map->player_count += get_chars_count(map->map[i], "P");
@@ -218,10 +227,10 @@ void	check_map_final(t_map *map)
 {
 	if (ft_strspn(map->map[0], "1") != map->width ||
 		ft_strspn(map->map[map->height - 1], "1") != map->width)
-			exit_error("First or last row not only obstacles.");
+			exit_error("First or last row not only obstacles.", map);
 	if (map->exit_count != 1 || map->player_count != 1 ||
 		map->coin_count < 1)
-		exit_error("Wrong count of 'exit','player' or 'coin' tiles.");
+		exit_error("Wrong count of 'exit','player' or 'coin' tiles.", map);
 	map->position = find_char_in_map(map, 'P');
 	map->exit = find_char_in_map(map, 'E');
 }
@@ -233,12 +242,12 @@ void	copy_map(t_map *map)
 	i = 0;
 	map->map_copy = malloc(sizeof(char *) * (map->height + 1));
 	if (!map->map_copy)
-		exit_error("You've ran out of memory!");
+		exit_error("You've ran out of memory!", map);
 	while (map->map[i])
 	{
 		map->map_copy[i] = ft_strdup(map->map[i]);
 		if (!map->map_copy[i])
-			exit_error("You've ran out of memory!");
+			exit_error("You've ran out of memory!", map);
 		i++;
 	}
 	map->map_copy[i] = NULL;
@@ -264,9 +273,9 @@ void	flood_fill(t_map *map, t_pos pos)
 void	flood_fill_check(t_map *map)
 {
 	if (map->coin_count != map->coin_total)
-		exit_error("Not all coins are reachable!");
+		exit_error("Not all coins are reachable!", map);
 	if (map->exit_count != map->exit_total)
-		exit_error("The exit isn't reachable!");
+		exit_error("The exit isn't reachable!", map);
 }
 
 void	my_mlx_pixel_put(t_mlx_data *data, int x, int y, int color)
@@ -283,7 +292,7 @@ t_mlx_data	load_texture(t_map *map, char *path)
 
 	img.img = mlx_xpm_file_to_image(map->mlx, path, &img.width, &img.height);
 	if (!img.img)
-		exit_error("Texture could not be loaded. Check file path!");
+		exit_error("Texture could not be loaded. Check file path!", map);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_px, &img.line_length, &img.endian);
 	return (img);
 }
@@ -363,7 +372,7 @@ void	move_player(t_map *map, t_pos new_pos)
 	last = (t_pos){map->position.x, map->position.y};
 	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y &&
 		map->coin_current == map->coin_total)
-		exit(1) ;
+		close_game(map);
 	if (map->map[new_pos.y][new_pos.x] == 'C')
 		map->coin_current++;
 	if (last.y == map->exit.y && last.x == map->exit.x)
@@ -381,7 +390,7 @@ void	move_player(t_map *map, t_pos new_pos)
 int	key_press_handler(int keycode, t_map *map)
 {
 	if (keycode == KEY_ESC)
-		exit(0);
+		close_game(map);
 	if (keycode == KEY_W || keycode == KEY_UP)
 		move_player(map, (t_pos){map->position.x, map->position.y - 1});
 	else if (keycode == KEY_S || keycode == KEY_DOWN)
@@ -393,13 +402,66 @@ int	key_press_handler(int keycode, t_map *map)
 	return (0);
 }
 
+static void	free_map_array(char **map)
+{
+	int	i;
+
+	i = 0;
+	if (!map)
+		return ;
+	while (map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
+}
+
+static void	destroy_images(t_map *map)
+{
+	if (map->textures.wall.img)
+		mlx_destroy_image(map->mlx, map->textures.wall.img);
+	if (map->textures.floor.img)
+		mlx_destroy_image(map->mlx, map->textures.floor.img);
+	if (map->textures.collectible.img)
+		mlx_destroy_image(map->mlx, map->textures.collectible.img);
+	if (map->textures.player.img)
+		mlx_destroy_image(map->mlx, map->textures.player.img);
+	if (map->textures.exit.img)
+		mlx_destroy_image(map->mlx, map->textures.exit.img);
+	if (map->textures.p_e_floor.img)
+		mlx_destroy_image(map->mlx, map->textures.p_e_floor.img);
+}
+
+int	close_game(t_map *map)
+{
+	if (!map)
+		exit(0);
+	destroy_images(map);
+	if (map->mlx_win)
+		mlx_destroy_window(map->mlx, map->mlx_win);
+	if (map->mlx)
+	{
+		mlx_destroy_display(map->mlx);
+		free(map->mlx);
+	}
+	if (map->map)
+		free_map_array(map->map);
+	if (map->map_copy)
+		free_map_array(map->map_copy);
+	if (map->map_lst)
+		ft_lstclear(&map->map_lst, free);
+	exit(0);
+	return (0);
+}
+
 int	main(int ac, char **av)
 {
 	t_map m;
 
 	init_struct(&m);	
-	check_args(ac, av);
-	read_file_to_lst(av[1], &m.map_lst);
+	check_args(ac, av, &m);
+	read_file_to_lst(av[1], &m.map_lst, &m);
 	lst_to_strs(&m);
 	check_map_loop(&m);
 	check_map_final(&m);
