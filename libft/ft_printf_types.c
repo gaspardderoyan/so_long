@@ -27,7 +27,7 @@ void	p_str(va_list *ptr, int *ccount)
 	int		len;
 
 	str = va_arg(*ptr, char *);
-	len = strlen_safe(str);
+	len = ft_strlen_safe(str);
 	*ccount += len;
 	if (str)
 		write(1, str, len);

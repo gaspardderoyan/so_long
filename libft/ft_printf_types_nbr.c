@@ -27,7 +27,7 @@ void	p_ptr(va_list *ptr, int *ccount)
 	else
 	{
 		str = ft_itoa_base(adr, "0123456789abcdef");
-		len = strlen_safe(str);
+		len = ft_strlen_safe(str);
 		*ccount += len + 2;
 		write(1, "0x", 2);
 		write(1, str, len);
@@ -43,7 +43,7 @@ void	p_ubase(va_list *ptr, int *ccount, char *base)
 
 	n = (unsigned int)va_arg(*ptr, unsigned int);
 	str = ft_itoa_base(n, base);
-	len = strlen_safe(str);
+	len = ft_strlen_safe(str);
 	*ccount += len;
 	write(1, str, len);
 	free(str);
@@ -64,7 +64,7 @@ void	p_int(va_list *ptr, int *ccount)
 		(*ccount)++;
 		str = ft_itoa_base(-n, "0123456789");
 	}
-	len = strlen_safe(str);
+	len = ft_strlen_safe(str);
 	write(1, str, len);
 	free(str);
 	*ccount += len;

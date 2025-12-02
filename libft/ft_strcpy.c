@@ -1,11 +1,23 @@
-char    *ft_strcpy(char *dst, char *src)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/02 19:57:57 by gderoyan          #+#    #+#             */
+/*   Updated: 2025/12/02 20:00:11 by gderoyan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+char	*ft_strcpy(char *dst, char *src)
 {
-        while (*src)
-        {
-                *dst = *src;
-                dst++;
-                src++;
-        }
-        *dst = 0;
-        return (dst);
+	while (*src)
+	{
+		*dst = *src;
+		dst++;
+		src++;
+	}
+	*dst = 0;
+	return (dst);
 }

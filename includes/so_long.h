@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 19:36:35 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 19:51:44 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ typedef struct s_map {
 }	t_map;
 
 /* utils_str */
-size_t	ft_strlen_safe(char *str);
 int		ft_strcmp(char *s1, char *s2);
 size_t	ft_strspn(const char *s, const char *accept);
 size_t	get_chars_count(const char *str, char *chars);

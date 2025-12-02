@@ -21,11 +21,11 @@ char	*join_lnb(char **line, char *buffer, char *nl_char)
 	size_t	buf_len;
 	char	*new_line;
 
-	line_len = strlen_safe(*line);
+	line_len = ft_strlen_safe(*line);
 	if (nl_char)
 		buf_len = (size_t)(nl_char - buffer + 1);
 	else
-		buf_len = strlen_safe(buffer);
+		buf_len = ft_strlen_safe(buffer);
 	new_line = (char *)malloc(sizeof(char) * (line_len + buf_len + 1));
 	if (!new_line)
 		return (NULL);

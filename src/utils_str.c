@@ -6,23 +6,11 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 19:27:06 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 19:27:10 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 19:51:26 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
-
-size_t	ft_strlen_safe(char *str)
-{
-	size_t	len;
-
-	if (!str)
-		return (0);
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
-}
 
 int	ft_strcmp(char *s1, char *s2)
 {
