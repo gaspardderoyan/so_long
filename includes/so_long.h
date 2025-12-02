@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 17:35:22 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:01:05 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@
 # include <fcntl.h>
 # include <stddef.h>
 # define TS 64
+
+typedef enum e_tex_id
+{
+    TEX_WALL,
+    TEX_FLOOR,
+    TEX_PLAYER,
+    TEX_COLL,
+    TEX_EXIT,
+    TEX_P_EXIT
+}   t_tex_id;
 
 typedef struct s_pos {
 	int	x;

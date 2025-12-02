@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 17:41:25 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:05:41 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,6 +298,34 @@ void load_all_textures(t_map *map)
     map->textures.wall = load_texture(map, "./textures/wall.xpm");
 }
 
+static void *get_img_ptr(t_map *map, t_tex_id type)
+{
+    if (type == TEX_WALL)
+        return (map->textures.wall.img);
+    else if (type == TEX_FLOOR)
+        return (map->textures.floor.img);
+    else if (type == TEX_PLAYER)
+        return (map->textures.player.img);
+    else if (type == TEX_COLL)
+        return (map->textures.collectible.img);
+    else if (type == TEX_EXIT)
+        return (map->textures.exit.img);
+    else if (type == TEX_P_EXIT)
+        return (map->textures.p_e_floor.img);
+    return (NULL);
+}
+
+void    render_sprite(t_map *map, t_pos pos, t_tex_id type)
+{
+    void    *img_ptr;
+
+    img_ptr = get_img_ptr(map, type);
+    if (!img_ptr)
+        return ;
+    mlx_put_image_to_window(map->mlx, map->mlx_win, img_ptr,
+        pos.x * TS, pos.y * TS);
+}
+
 void	render_map(t_map *map)
 {
 	int i;
@@ -309,15 +337,15 @@ void	render_map(t_map *map)
 		j = 0;
 		while (map->map[i][j])
 		{
-			mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, j * TS, i * TS);
+			render_sprite(map, (t_pos){j, i}, TEX_FLOOR);
 			if (map->map[i][j] == '1')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.wall.img, j * TS, i * TS);
+				render_sprite(map, (t_pos){j, i}, TEX_WALL);
 			else if (map->map[i][j] == 'C')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.collectible.img, j * TS, i * TS);
+				render_sprite(map, (t_pos){j, i}, TEX_COLL);
 			else if (map->map[i][j] == 'P')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, j * TS, i * TS);
+				render_sprite(map, (t_pos){j, i}, TEX_PLAYER);
 			else if (map->map[i][j] == 'E')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, j * TS, i * TS);
+				render_sprite(map, (t_pos){j, i}, TEX_EXIT);
 			j++;
 		}
 		i++;
@@ -333,20 +361,21 @@ void	move_player(t_map *map, t_pos new_pos)
 		return ;
 	ft_printf("Current movement count: %d\n", ++(map->moves));
 	last = (t_pos){map->position.x, map->position.y};
-	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y && map->coin_current == map->coin_total)
+	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y &&
+		map->coin_current == map->coin_total)
 		exit(1) ;
 	if (map->map[new_pos.y][new_pos.x] == 'C')
 		map->coin_current++;
 	if (last.y == map->exit.y && last.x == map->exit.x)
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, last.x * TS, last.y * TS);
+		render_sprite(map, last, TEX_EXIT);
 	else
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, last.x * TS, last.y * TS);
+		render_sprite(map, last, TEX_FLOOR);
 	map->map[last.y][last.x] = '0';
 	map->position = new_pos;
 	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y)
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.p_e_floor.img, new_pos.x * TS, new_pos.y * TS);
+		render_sprite(map, new_pos, TEX_P_EXIT);
 	else
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, new_pos.x * TS, new_pos.y * TS);
+		render_sprite(map, new_pos, TEX_PLAYER);
 }
 
 int	key_press_handler(int keycode, t_map *map)
