@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 18:30:32 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 19:24:42 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,41 @@ typedef struct s_map {
 	void	*win;
 	t_textures	textures;
 }	t_map ;
+
+
+/* utils_str */
+size_t	ft_strlen_safe(char *str);
+int	ft_strcmp(char *s1, char *s2);
+size_t	ft_strspn(const char *s, const char *accept);
+size_t	get_chars_count(const char *str, char *chars);
+
+/* map_parsing */
+void	check_args(int ac, char **av, t_map *map);
+void	read_file_to_lst(char *filename, t_list **head, t_map *map);
+void	lst_to_strs(t_map *map);
+
+/* map_validation */
+void	check_map_loop(t_map *map);
+void	check_map_final(t_map *map);
+
+/* map_flood_fill */
+void	copy_map(t_map *map);
+void	flood_fill(t_map *map, t_pos pos);
+void	flood_fill_check(t_map *map);
+
+/* init */
+void	init_struct(t_map *map);
+void	load_all_textures(t_map *map);
+
+/* cleanup */
+int	close_game(t_map *map);
+void	exit_error(char *msg, t_map *map);
+
+/* render */
+void	render_sprite(t_map *m, t_pos pos, t_tex_id type);
+void	render_map(t_map *map);
+
+/* events */
+int	key_press_handler(int keycode, t_map *map);
 
 #endif

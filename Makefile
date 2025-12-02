@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -Iincludes -Ilibft -I$(MLX_DIR)
 
-SRC_DIR = src/core
+SRC_DIR = src
 OBJ_DIR = obj
 
 LIBFT_DIR = libft
@@ -18,7 +18,15 @@ MLX = $(MLX_DIR)/libmlx.a
 
 NAME = so_long
 
-SRCS = $(SRC_DIR)/main.c
+SRCS = $(SRC_DIR)/main.c \
+       $(SRC_DIR)/utils_str.c \
+       $(SRC_DIR)/map_parsing.c \
+       $(SRC_DIR)/map_validation.c \
+       $(SRC_DIR)/map_flood_fill.c \
+       $(SRC_DIR)/init.c \
+       $(SRC_DIR)/render.c \
+       $(SRC_DIR)/events.c \
+       $(SRC_DIR)/cleanup.c
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # OS-specific linking flags
