@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 16:01:45 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 17:24:17 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 17:41:25 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,15 +309,15 @@ void	render_map(t_map *map)
 		j = 0;
 		while (map->map[i][j])
 		{
-			mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, j * TILE_SIZE, i * TILE_SIZE);
+			mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, j * TS, i * TS);
 			if (map->map[i][j] == '1')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.wall.img, j * TILE_SIZE, i * TILE_SIZE);
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.wall.img, j * TS, i * TS);
 			else if (map->map[i][j] == 'C')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.collectible.img, j * TILE_SIZE, i * TILE_SIZE);
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.collectible.img, j * TS, i * TS);
 			else if (map->map[i][j] == 'P')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, j * TILE_SIZE, i * TILE_SIZE);
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, j * TS, i * TS);
 			else if (map->map[i][j] == 'E')
-				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, j * TILE_SIZE, i * TILE_SIZE);
+				mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, j * TS, i * TS);
 			j++;
 		}
 		i++;
@@ -331,29 +331,28 @@ void	move_player(t_map *map, t_pos new_pos)
 
 	if (map->map[new_pos.y][new_pos.x] == '1')
 		return ;
-	map->moves++;
-	last.x = map->position.x;
-	last.y = map->position.y;
+	ft_printf("Current movement count: %d\n", ++(map->moves));
+	last = (t_pos){map->position.x, map->position.y};
 	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y && map->coin_current == map->coin_total)
 		exit(1) ;
 	if (map->map[new_pos.y][new_pos.x] == 'C')
 		map->coin_current++;
 	if (last.y == map->exit.y && last.x == map->exit.x)
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, last.x * TILE_SIZE, last.y * TILE_SIZE);
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.exit.img, last.x * TS, last.y * TS);
 	else
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, last.x * TILE_SIZE, last.y * TILE_SIZE);
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.floor.img, last.x * TS, last.y * TS);
 	map->map[last.y][last.x] = '0';
 	map->position = new_pos;
 	if (new_pos.x == map->exit.x && new_pos.y == map->exit.y)
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.p_e_floor.img, new_pos.x * TILE_SIZE, new_pos.y * TILE_SIZE);
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.p_e_floor.img, new_pos.x * TS, new_pos.y * TS);
 	else
-		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, new_pos.x * TILE_SIZE, new_pos.y * TILE_SIZE);
+		mlx_put_image_to_window(map->mlx, map->mlx_win, map->textures.player.img, new_pos.x * TS, new_pos.y * TS);
 }
 
 int	key_press_handler(int keycode, t_map *map)
 {
 	if (keycode == KEY_ESC)
-		exit_error("Bye bye!");
+		exit(0);
 	if (keycode == KEY_W || keycode == KEY_UP)
 		move_player(map, (t_pos){map->position.x, map->position.y - 1});
 	else if (keycode == KEY_S || keycode == KEY_DOWN)
@@ -367,23 +366,22 @@ int	key_press_handler(int keycode, t_map *map)
 
 int	main(int ac, char **av)
 {
-	t_map map;
+	t_map m;
 
-	init_struct(&map);	
+	init_struct(&m);	
 	check_args(ac, av);
-	read_file_to_lst(av[1], &map.map_lst);
-	lst_to_strs(&map);
-	check_map_loop(&map);
-	check_map_final(&map);
-	copy_map(&map);
-	flood_fill(&map, map.position);
-	flood_fill_check(&map);
+	read_file_to_lst(av[1], &m.map_lst);
+	lst_to_strs(&m);
+	check_map_loop(&m);
+	check_map_final(&m);
+	copy_map(&m);
+	flood_fill(&m, m.position);
+	flood_fill_check(&m);
 	
-	map.mlx = mlx_init();
-	map.mlx_win = mlx_new_window(map.mlx, map.width * TILE_SIZE, map.height * TILE_SIZE, "My first window");
-	load_all_textures(&map);
-	render_map(&map);
-	mlx_hook(map.mlx_win, 2, (1L << 0), &key_press_handler, &map);
-
-	mlx_loop(map.mlx);
+	m.mlx = mlx_init();
+	m.mlx_win = mlx_new_window(m.mlx, m.width * TS, m.height * TS, "./so_long");
+	load_all_textures(&m);
+	render_map(&m);
+	mlx_hook(m.mlx_win, 2, (1L << 0), &key_press_handler, &m);
+	mlx_loop(m.mlx);
 }

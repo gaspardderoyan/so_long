@@ -6,7 +6,7 @@
 /*   By: gderoyan <gderoyan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:59:18 by gderoyan          #+#    #+#             */
-/*   Updated: 2025/12/02 17:11:54 by gderoyan         ###   ########.fr       */
+/*   Updated: 2025/12/02 17:35:22 by gderoyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <string.h>
 # include <fcntl.h>
 # include <stddef.h>
-# define TILE_SIZE 64
+# define TS 64
 
 typedef struct s_pos {
 	int	x;
